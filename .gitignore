@@ -1,0 +1,5 @@
+.env
+.idea
+pycache/
+test.py
+logs/info_debug.log
