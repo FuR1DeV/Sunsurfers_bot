@@ -2,6 +2,8 @@ from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
 
 from bot import dp, bot
+from data import create_db
+from users.user import UserMain
 from markups import markup_start
 from settings import config
 
@@ -15,6 +17,7 @@ async def start(message: types.Message, state: FSMContext):
     await bot.send_message(message.from_user.id,
                            f'{message.from_user.first_name} Ом мани падме хум',
                            reply_markup=markup_start.inline_start)
+    UserMain.register_user_handler(dp)
 
 
 # @dp.message_handler(commands='admin', state='*')
