@@ -59,43 +59,41 @@ class UserMain:
                                reply_markup=markup_users.main_menu())
         await states.UserStart.user_menu.set()
 
-    # @staticmethod
-    # async def user_menu(message: types.Message, state: FSMContext):
-    #     await state.finish()
-    #     if "Мой профиль" in message.text:
-    #         CustomerProfile.register_customer_profile(dp)
-    #         phone_number = customer_get_db_obj.customer_exists(message.from_user.id)[3]
-    #         await customer_states.CustomerProfile.my_profile.set()
-    #         await bot.send_message(message.from_user.id,
-    #                                f"{config.KEYBOARD.get('DASH') * 14}\n"
-    #                                f"Ваш профиль <b>Заказчика</b>:\n"
-    #                                f"{config.KEYBOARD.get('ID_BUTTON')} "
-    #                                f"Ваш ID: <b>{message.from_user.id}</b>\n"
-    #                                f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-    #                                f"Ваш никнейм <b>@{message.from_user.username}</b>\n"
-    #                                f"{config.KEYBOARD.get('TELEPHONE')} "
-    #                                f"Ваш номер <b>{phone_number}</b>\n"
-    #                                f"{config.KEYBOARD.get('DOLLAR')} "
-    #                                f"Ваш текущий баланс "
-    #                                f"<b>{customer_get_db_obj.customer_money(message.from_user.id)[0]}"
-    #                                f"</b> руб.\n{config.KEYBOARD.get('BAR_CHART')} "
-    #                                f"Ваш рейтинг <b>"
-    #                                f"{str(customer_get_db_obj.customer_rating(message.from_user.id)[0])[0:5]}</b>\n"
-    #                                f"{config.KEYBOARD.get('DASH') * 14}",
-    #                                reply_markup=markup_customer.customer_profile())
-    #     if "Информация" in message.text:
-    #         CustomerCreateTask.register_customer_create_task(dp)
-    #         await customer_states.CustomerCreateTask.create.set()
-    #         await bot.send_message(message.from_user.id,
-    #                                "Хотите создать новый заказ ?",
-    #                                reply_markup=markup_customer.approve())
-    #     if "Обратная связь" in message.text:
-    #         await customer_states.CustomerHelp.help.set()
-    #         await bot.send_message(message.from_user.id,
-    #                                "Опишите вашу проблему, можете прикрепить фото или видео\n"
-    #                                "Когда закончите сможете вернуться в главное меню",
-    #                                reply_markup=markup_customer.photo_or_video_help())
-    #         CustomerHelp.register_customer_help(dp)
+    @staticmethod
+    async def user_menu(message: types.Message, state: FSMContext):
+        await state.finish()
+        if "Мой профиль" in message.text:
+            UserProfile.register_user_profile(dp)
+            phone_number = user_get_db_obj.user_exists(message.from_user.id)[5]
+            await states.UserProfile.my_profile.set()
+            await bot.send_message(message.from_user.id,
+                                   f"{config.KEYBOARD.get('DASH') * 10}\n"
+                                   f"Ваш профиль <b>Пользователя</b>:\n"
+                                   f"{config.KEYBOARD.get('ID_BUTTON')} "
+                                   f"Ваш ID: <b>{message.from_user.id}</b>\n"
+                                   f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                                   f"Ваш никнейм <b>@{message.from_user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('TELEPHONE')} "
+                                   f"Ваш номер <b>{phone_number}</b>\n"
+                                   f"{config.KEYBOARD.get('DOLLAR')} "
+                                   f"Вы находитесь "
+                                   f"<b>Тут отображается страна"
+                                   f"</b> \n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
+        # if "Информация" in message.text:
+        #     CustomerCreateTask.register_customer_create_task(dp)
+        #     await customer_states.CustomerCreateTask.create.set()
+        #     await bot.send_message(message.from_user.id,
+        #                            "Хотите создать новый заказ ?",
+        #                            reply_markup=markup_customer.approve())
+        # if "Обратная связь" in message.text:
+        #     await customer_states.CustomerHelp.help.set()
+        #     await bot.send_message(message.from_user.id,
+        #                            "Опишите вашу проблему, можете прикрепить фото или видео\n"
+        #                            "Когда закончите сможете вернуться в главное меню",
+        #                            reply_markup=markup_customer.photo_or_video_help())
+        #     CustomerHelp.register_customer_help(dp)
 
     @staticmethod
     def register_user_handler(dp: Dispatcher):
@@ -103,4 +101,24 @@ class UserMain:
                                     state=states.UserPhone.phone)
         dp.register_callback_query_handler(UserMain.hi_user, text='om')
         dp.register_message_handler(UserMain.main, state=states.UserStart.start)
-        # dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
+        dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
+
+
+class UserProfile:
+    @staticmethod
+    async def user_profile(message: types.Message):
+        if message.text == "Главное меню":
+            await states.UserStart.user_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   "Вы вернулись в главное меню",
+                                   reply_markup=markup_users.main_menu(),
+                                   )
+        if message.text == "Обновить местоположение":
+            await bot.send_message(message.from_user.id,
+                                   "Здесь будет реализовано обновление вашего местоположения")
+
+    @staticmethod
+    def register_user_profile(dp):
+        dp.register_message_handler(UserProfile.user_profile,
+                                    state=states.UserProfile.my_profile)
+

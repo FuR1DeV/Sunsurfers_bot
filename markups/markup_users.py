@@ -16,3 +16,9 @@ def main_menu():
     keyboard.row("Обратная связь")
     return keyboard
 
+
+def user_profile():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row("Обновить местоположение")
+    keyboard.row("Главное меню")
+    return keyboard
