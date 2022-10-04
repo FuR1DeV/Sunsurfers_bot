@@ -88,30 +88,34 @@ class UserMain:
     @staticmethod
     async def main(message: types.Message):
         await bot.send_message(message.from_user.id,
-                               f"{message.from_user.first_name} Вы в главном меню",
+                               f"{message.from_user.first_name} You are in the main menu",
                                reply_markup=markup_users.main_menu())
         await states.UserStart.user_menu.set()
 
     @staticmethod
     async def user_menu(message: types.Message, state: FSMContext):
         await state.finish()
-        if "Мой профиль" in message.text:
+        if "My profile" in message.text:
             UserProfile.register_user_profile(dp)
-            phone_number = user_get_db_obj.user_exists(message.from_user.id)[5]
+            res = user_get_db_obj.user_exists(message.from_user.id)
             await states.UserProfile.my_profile.set()
             await bot.send_message(message.from_user.id,
-                                   f"{config.KEYBOARD.get('DASH') * 10}\n"
-                                   f"Ваш профиль <b>Пользователя</b>:\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"Your Profile:\n"
                                    f"{config.KEYBOARD.get('ID_BUTTON')} "
-                                   f"Ваш ID: <b>{message.from_user.id}</b>\n"
+                                   f"Your ID: <b>{message.from_user.id}</b>\n"
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-                                   f"Ваш никнейм <b>@{message.from_user.username}</b>\n"
+                                   f"Your nickname <b>@{message.from_user.username}</b>\n"
                                    f"{config.KEYBOARD.get('TELEPHONE')} "
-                                   f"Ваш номер <b>{phone_number}</b>\n"
-                                   f"{config.KEYBOARD.get('DOLLAR')} "
-                                   f"Вы находитесь "
-                                   f"<b>Тут отображается страна"
-                                   f"</b> \n"
+                                   f"Your number <b>{res[3]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Your Country <b>{res[7]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Your State <b>{res[8]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Your City <b>{res[9]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Your Address <b>{res[10]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         # if "Информация" in message.text:
@@ -141,15 +145,15 @@ class UserMain:
 class UserProfile:
     @staticmethod
     async def user_profile(message: types.Message):
-        if message.text == "Главное меню":
+        if message.text == "Main menu":
             await states.UserStart.user_menu.set()
             await bot.send_message(message.from_user.id,
-                                   "Вы вернулись в главное меню",
+                                   "You have returned to the main menu",
                                    reply_markup=markup_users.main_menu(),
                                    )
-        if message.text == "Обновить местоположение":
+        if message.text == "Update Location":
             await bot.send_message(message.from_user.id,
-                                   "Здесь будет реализовано обновление вашего местоположения")
+                                   "This is where your location update will be implemented")
 
     @staticmethod
     def register_user_profile(dp):

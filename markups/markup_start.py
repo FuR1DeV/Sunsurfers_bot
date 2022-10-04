@@ -7,7 +7,7 @@ markup_clean = ReplyKeyboardRemove()
 
 def send_my_geo():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    button = KeyboardButton(text='Отправить моё местоположение', request_location=True)
+    button = KeyboardButton(text='Submit my location', request_location=True)
     keyboard.add(button)
     return keyboard
 

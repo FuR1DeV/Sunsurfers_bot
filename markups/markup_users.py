@@ -6,19 +6,19 @@ markup_clean = ReplyKeyboardRemove()
 
 def back():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row("Назад")
+    keyboard.row("Back")
     return keyboard
 
 
 def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row("Мой профиль", "Информация")
-    keyboard.row("Обратная связь")
+    keyboard.row("My profile", "Information")
+    keyboard.row("Feedback")
     return keyboard
 
 
 def user_profile():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row("Обновить местоположение")
-    keyboard.row("Главное меню")
+    keyboard.row("Update Location")
+    keyboard.row("Main menu")
     return keyboard
