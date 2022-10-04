@@ -18,3 +18,6 @@ class UserProfile(StatesGroup):
 class Information(StatesGroup):
     info: State = State()
 
+
+class Feedback(StatesGroup):
+    help: State = State()

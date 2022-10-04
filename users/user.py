@@ -126,13 +126,13 @@ class UserMain:
             await bot.send_message(message.from_user.id,
                                    "Here, you can see information about your friends",
                                    reply_markup=markup_users.go_info())
-        # if "Feedback" in message.text:
-        #     await customer_states.CustomerHelp.help.set()
-        #     await bot.send_message(message.from_user.id,
-        #                            "Опишите вашу проблему, можете прикрепить фото или видео\n"
-        #                            "Когда закончите сможете вернуться в главное меню",
-        #                            reply_markup=markup_customer.photo_or_video_help())
-        #     CustomerHelp.register_customer_help(dp)
+        if "Feedback" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Describe your problem\n"
+                                   "When you're done, you can return to the main menu",
+                                   reply_markup=markup_users.user_feedback())
+            Feedback.register_feedback(dp)
+            await states.Feedback.help.set()
 
     @staticmethod
     def register_user_handler(dp: Dispatcher):
@@ -197,3 +197,27 @@ class Information:
                                            state=states.Information.info, text='go_info')
         dp.register_callback_query_handler(Information.main,
                                            state=states.Information.info, text='main_menu')
+
+
+class Feedback:
+    @staticmethod
+    async def help(message: types.Message):
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
+            await bot.send_message(message.from_user.id,
+                                   f"{message.from_user.first_name} You are in the main menu",
+                                   reply_markup=markup_users.main_menu())
+            await states.UserStart.user_menu.set()
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
+            await bot.send_message('@sunsurfers_bot_help',
+                                   f"Name {message.from_user.first_name}\n"
+                                   f"ID {message.from_user.id}\n"
+                                   f"Message - <b>{message.text}</b>\n")
+            await states.UserStart.user_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   "Message sent to tech support!",
+                                   reply_markup=markup_users.main_menu())
+
+    @staticmethod
+    def register_feedback(dp):
+        dp.register_message_handler(Feedback.help,
+                                    state=states.Feedback.help)
