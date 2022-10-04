@@ -18,22 +18,22 @@ class UserMain:
         if not user_get_db_obj.user_exists(callback.from_user.id):
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
             keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-            button = types.KeyboardButton(text='Запрос телефона', request_contact=True)
+            button = types.KeyboardButton(text='Phone request', request_contact=True)
             keyboard.add(button)
             await bot.send_message(callback.from_user.id,
                                    f"{callback.from_user.first_name}\n"
-                                   f"Поделитесь с нами вашим номером телефона!",
+                                   f"Share with us your phone number!",
                                    reply_markup=keyboard)
             await states.UserPhone.phone.set()
         elif not user_get_db_obj.user_ban(callback.from_user.id)[0]:
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
             await states.UserStart.user_menu.set()
             await bot.send_message(callback.from_user.id,
-                                   "Спасибо что пользуетесь нашим ботом!",
+                                   "Thank you for using our bot!",
                                    reply_markup=markup_users.main_menu())
         else:
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
-            await bot.send_message(callback.from_user.id, "Вы заблокированы! Обратитесь в техподдержку!")
+            await bot.send_message(callback.from_user.id, "You are blocked! Contact technical support!")
 
     @staticmethod
     async def phone(message: types.Message):
@@ -45,12 +45,45 @@ class UserMain:
                                      message.from_user.last_name)
             await states.UserStart.user_menu.set()
             await bot.send_message(message.from_user.id,
-                                   f"{message.from_user.first_name} Спасибо что пользуетесь нашим ботом!",
-                                   reply_markup=markup_users.main_menu())
+                                   f"{message.from_user.first_name} In order to use this bot you must "
+                                   f"provide information about your location",
+                                   reply_markup=markup_start.send_my_geo())
+            await states.UserStart.geo.set()
         else:
             await bot.send_message(message.from_user.id,
-                                   "Это не ваш номер телефона! \n"
-                                   "Нажмите /start чтобы начать заново")
+                                   "This is not your phone number!\n"
+                                   "Press /start to start again")
+
+    @staticmethod
+    async def geo_position(message: types.Message, state: FSMContext):
+        try:
+            n = Nominatim(user_agent='User')
+            loc = f"{message.location.latitude}, {message.location.longitude}"
+            location = n.reverse(loc)
+            country = location.raw.get("address").get("country")
+            state_ = location.raw.get("address").get("state")
+            city = location.raw.get("address").get("city")
+            address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
+            latitude = location.raw.get("lat")
+            longitude = location.raw.get("lon")
+            if city is None:
+                city = location.raw.get("address").get("town")
+            await bot.send_message(message.from_user.id,
+                                   f'Country: {country}\n'
+                                   f'State: {state_}\n'
+                                   f'City: {city}\n'
+                                   f'Address: {address}\n')
+            await bot.send_message(message.from_user.id,
+                                   "Please check the coordinates, if you made a mistake, "
+                                   "you can send the geolocation again. If everything is ok, "
+                                   "click OK",
+                                   reply_markup=markup_start.start())
+            user_set_db_obj.user_set_geo(
+                message.from_user.id, country, state_, city, address, latitude, longitude)
+        except AttributeError:
+            await bot.send_message(message.from_user.id,
+                                   "Something went wrong, contact support")
+        await state.finish()
 
     @staticmethod
     async def main(message: types.Message):
@@ -99,7 +132,8 @@ class UserMain:
     def register_user_handler(dp: Dispatcher):
         dp.register_message_handler(UserMain.phone, content_types=['contact'],
                                     state=states.UserPhone.phone)
-        dp.register_callback_query_handler(UserMain.hi_user, text='om')
+        dp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
+        dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'], state=states.UserStart.geo)
         dp.register_message_handler(UserMain.main, state=states.UserStart.start)
         dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
 

@@ -6,6 +6,7 @@ class UserPhone(StatesGroup):
 
 
 class UserStart(StatesGroup):
+    geo: State = State()
     start: State = State()
     user_menu: State = State()
 

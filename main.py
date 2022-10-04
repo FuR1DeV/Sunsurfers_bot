@@ -1,24 +1,24 @@
 from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
+from geopy import Nominatim
 
 from bot import dp, bot
-from data import create_db
+from data import create_db, get_set_db
 from users.user import UserMain
 from markups import markup_start
 from settings import config
+from states import states
 
 
 @dp.message_handler(commands='start', state='*')
-async def start(message: types.Message, state: FSMContext):
+async def start(message: types.Message):
     await bot.send_message(message.from_user.id,
-                           f'Добро пожаловать в Telegram Bot Сансерферов! '
+                           f'<b>Hello there</b>'
                            , reply_markup=markup_start.markup_clean)
-    await state.finish()
     await bot.send_message(message.from_user.id,
-                           f'{message.from_user.first_name} Ом мани падме хум',
-                           reply_markup=markup_start.inline_start)
+                           f'<b>Click start to start using the bot</b>'
+                           , reply_markup=markup_start.start())
     UserMain.register_user_handler(dp)
-
 
 # @dp.message_handler(commands='admin', state='*')
 # async def admin(message: types.Message, state: FSMContext):
