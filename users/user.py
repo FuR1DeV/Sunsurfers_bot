@@ -1,8 +1,10 @@
 import logging
 from datetime import datetime
+from collections import Counter
 
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from geopy.geocoders import Nominatim
 
 from bot import bot, dp
@@ -105,26 +107,26 @@ class UserMain:
                                    f"{config.KEYBOARD.get('ID_BUTTON')} "
                                    f"Your ID: <b>{message.from_user.id}</b>\n"
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-                                   f"Your nickname <b>@{message.from_user.username}</b>\n"
+                                   f"Your nickname: <b>@{message.from_user.username}</b>\n"
                                    f"{config.KEYBOARD.get('TELEPHONE')} "
-                                   f"Your number <b>{res[3]}</b>\n"
+                                   f"Your number: <b>{res[3]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your Country <b>{res[7]}</b>\n"
+                                   f"Your Country: <b>{res[7]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your State <b>{res[8]}</b>\n"
+                                   f"Your State: <b>{res[8]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your City <b>{res[9]}</b>\n"
+                                   f"Your City: <b>{res[9]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your Address <b>{res[10]}</b>\n"
+                                   f"Your Address: <b>{res[10]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
-        # if "Информация" in message.text:
-        #     CustomerCreateTask.register_customer_create_task(dp)
-        #     await customer_states.CustomerCreateTask.create.set()
-        #     await bot.send_message(message.from_user.id,
-        #                            "Хотите создать новый заказ ?",
-        #                            reply_markup=markup_customer.approve())
-        # if "Обратная связь" in message.text:
+        if "Information" in message.text:
+            Information.register_info(dp)
+            await states.Information.info.set()
+            await bot.send_message(message.from_user.id,
+                                   "Here, you can see information about your friends",
+                                   reply_markup=markup_users.go_info())
+        # if "Feedback" in message.text:
         #     await customer_states.CustomerHelp.help.set()
         #     await bot.send_message(message.from_user.id,
         #                            "Опишите вашу проблему, можете прикрепить фото или видео\n"
@@ -137,7 +139,8 @@ class UserMain:
         dp.register_message_handler(UserMain.phone, content_types=['contact'],
                                     state=states.UserPhone.phone)
         dp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
-        dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'], state=states.UserStart.geo)
+        dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
+                                    state=states.UserStart.geo)
         dp.register_message_handler(UserMain.main, state=states.UserStart.start)
         dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
 
@@ -145,13 +148,13 @@ class UserMain:
 class UserProfile:
     @staticmethod
     async def user_profile(message: types.Message):
-        if message.text == "Main menu":
+        if "Main menu" in message.text:
             await states.UserStart.user_menu.set()
             await bot.send_message(message.from_user.id,
                                    "You have returned to the main menu",
                                    reply_markup=markup_users.main_menu(),
                                    )
-        if message.text == "Update Location":
+        if "Update Location" in message.text:
             await bot.send_message(message.from_user.id,
                                    "This is where your location update will be implemented")
 
@@ -160,3 +163,37 @@ class UserProfile:
         dp.register_message_handler(UserProfile.user_profile,
                                     state=states.UserProfile.my_profile)
 
+
+class Information:
+    @staticmethod
+    async def main(message: types.Message):
+        await bot.send_message(message.from_user.id,
+                               f"{message.from_user.first_name} You are in the main menu",
+                               reply_markup=markup_users.main_menu())
+        await states.UserStart.user_menu.set()
+
+    @staticmethod
+    async def info(callback: types.CallbackQuery):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        res = global_get_db_obj.all_users()
+        country = []
+        for i in res:
+            country.append(i[7])
+        inline_country = InlineKeyboardMarkup()
+        countrys = Counter(country)
+        for k, v in countrys.items():
+            inline_country.insert(InlineKeyboardButton(text=f'{k} ({v})', callback_data=f'country_{k}'))
+        inline_country.insert(InlineKeyboardButton(text="Back", callback_data="main_menu"))
+        await bot.send_message(callback.from_user.id,
+                               f"Display all countries in which there are friends",
+                               reply_markup=inline_country)
+        await bot.send_message(callback.from_user.id,
+                               "Select a country or return to the main menu",
+                               reply_markup=markup_start.markup_clean)
+
+    @staticmethod
+    def register_info(dp):
+        dp.register_callback_query_handler(Information.info,
+                                           state=states.Information.info, text='go_info')
+        dp.register_callback_query_handler(Information.main,
+                                           state=states.Information.info, text='main_menu')

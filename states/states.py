@@ -13,3 +13,8 @@ class UserStart(StatesGroup):
 
 class UserProfile(StatesGroup):
     my_profile: State = State()
+
+
+class Information(StatesGroup):
+    info: State = State()
+

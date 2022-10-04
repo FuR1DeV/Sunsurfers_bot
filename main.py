@@ -11,7 +11,8 @@ from states import states
 
 
 @dp.message_handler(commands='start', state='*')
-async def start(message: types.Message):
+async def start(message: types.Message, state: FSMContext):
+    await state.finish()
     await bot.send_message(message.from_user.id,
                            f'<b>Hello there</b>'
                            , reply_markup=markup_start.markup_clean)
