@@ -17,6 +17,9 @@ ADMIN_ID = str(os.getenv('ADMIN_ID')).split(',')
 
 KEYBOARD = {
     'DASH': emojize(':minus:'),
+    'OM': emojize(':om:'),
+    'NAZAR_AMULET': emojize(':nazar_amulet:'),
+    'YIN_YANG': emojize(':yin_yang:'),
     'SMILING_FACE_WITH_SUNGLASSES': emojize(':smiling_face_with_sunglasses:'),
     'BUST_IN_SILHOUETTE': emojize(':bust_in_silhouette:'),
     'HAMMER_AND_PICK': emojize(':hammer_and_pick:'),

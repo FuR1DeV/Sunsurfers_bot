@@ -16,6 +16,10 @@ class UserProfile(StatesGroup):
     update_location: State = State()
 
 
+class UserOm(StatesGroup):
+    start: State = State()
+
+
 class Information(StatesGroup):
     info: State = State()
 

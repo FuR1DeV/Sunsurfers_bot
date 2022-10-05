@@ -168,6 +168,11 @@ class UserMain:
                                    reply_markup=markup_users.user_feedback())
             Feedback.register_feedback(dp)
             await states.Feedback.help.set()
+        if "OMMMMMM" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Here you can get Human Design, Gene Keys",
+                                   reply_markup=markup_users.user_ommmmm())
+            await states.UserOm.start.set()
 
     @staticmethod
     def register_user_handler(dp: Dispatcher):
@@ -194,6 +199,10 @@ class UserProfile:
                                    f"{message.from_user.first_name} Update your location",
                                    reply_markup=markup_start.update_location_send_my_geo())
             await states.UserProfile.update_location.set()
+        if "Update About me" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Here you can edit your information",
+                                   reply_markup=markup_users.back())
 
     @staticmethod
     async def update_location(message: types.Message, state: FSMContext):
@@ -325,3 +334,7 @@ class Feedback:
     def register_feedback(dp):
         dp.register_message_handler(Feedback.help,
                                     state=states.Feedback.help)
+
+
+class Om:
+    pass
