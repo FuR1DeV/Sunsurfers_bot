@@ -100,6 +100,7 @@ class UserMain:
                     data["address"] = address
                     data["latitude"] = latitude
                     data["longitude"] = longitude
+                    data["time_location"] = str(datetime.now())[:19]
         except AttributeError:
             await bot.send_message(message.from_user.id,
                                    "Something went wrong\n"
@@ -119,7 +120,8 @@ class UserMain:
                                          data.get("city"),
                                          data.get("address"),
                                          data.get("latitude"),
-                                         data.get("longitude"))
+                                         data.get("longitude"),
+                                         data.get("time_location"))
         await bot.send_message(callback.from_user.id,
                                f"{callback.from_user.first_name} You are in the main menu",
                                reply_markup=markup_users.main_menu())

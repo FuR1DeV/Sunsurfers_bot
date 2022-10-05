@@ -56,13 +56,13 @@ class UserSetDB(Database):
             )
             self.connection.commit()
 
-    def user_set_geo(self, user_id, country, state, city, address, latitude, longitude):
+    def user_set_geo(self, user_id, country, state, city, address, latitude, longitude, updated_location):
         self.logger.info(f'The user updates his geo data')
         with self.connection.cursor() as cursor:
             cursor.execute(
                 "UPDATE users SET country = %(country)s, state = %(state)s, city = %(city)s, "
-                "address = %(address)s, latitude = %(latitude)s, longitude = %(longitude)s "
-                "WHERE user_id = %(user_id)s;", {
+                "address = %(address)s, latitude = %(latitude)s, longitude = %(longitude)s, "
+                "updated_location = %(updated_location)s WHERE user_id = %(user_id)s;", {
                     'user_id': user_id,
                     'country': country,
                     'state': state,
@@ -70,6 +70,7 @@ class UserSetDB(Database):
                     'address': address,
                     'latitude': latitude,
                     'longitude': longitude,
+                    'updated_location': updated_location,
                 }
             )
             self.connection.commit()

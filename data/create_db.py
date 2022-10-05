@@ -34,6 +34,7 @@ class Database:
                     address character varying(255),
                     latitude character varying(255),
                     longitude character varying(255),
+                    updated_location timestamp without time zone,
                     ban integer DEFAULT 0,
                     CONSTRAINT users_pkey PRIMARY KEY (id)
                 );"""
