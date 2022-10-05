@@ -15,7 +15,7 @@ def back():
 def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} My profile",
-                 f"{config.KEYBOARD.get('INFORMATION')} Information")
+                 f"{config.KEYBOARD.get('WORLD_MAP')} Locations")
     keyboard.row(f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     return keyboard
 

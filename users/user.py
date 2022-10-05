@@ -38,13 +38,14 @@ class UserMain:
             await bot.send_message(callback.from_user.id, "You are blocked! Contact technical support!")
 
     @staticmethod
-    async def phone(message: types.Message):
+    async def phone(message: types.Message, state: FSMContext):
         if message.contact.user_id == message.from_user.id:
-            user_set_db_obj.user_add(message.from_user.id,
-                                     message.from_user.username,
-                                     message.contact.phone_number,
-                                     message.from_user.first_name,
-                                     message.from_user.last_name)
+            async with state.proxy() as data:
+                data["user_id"] = message.from_user.id
+                data["username"] = message.from_user.username
+                data["contact"] = f"+{message.contact.phone_number}"
+                data["first_name"] = message.from_user.first_name
+                data["last_name"] = message.from_user.last_name
             await states.UserStart.user_menu.set()
             await bot.send_message(message.from_user.id,
                                    f"{message.from_user.first_name} In order to use this bot you must "
@@ -75,22 +76,47 @@ class UserMain:
                                    f'State: {state_}\n'
                                    f'City: {city}\n'
                                    f'Address: {address}\n')
-            await bot.send_message(message.from_user.id,
-                                   "Please check the coordinates, if you made a mistake, "
-                                   "you can send the geolocation again. If everything is ok, "
-                                   "click OK",
-                                   reply_markup=markup_start.start())
-            user_set_db_obj.user_set_geo(
-                message.from_user.id, country, state_, city, address, latitude, longitude)
+            if country is None:
+                await bot.send_message(message.from_user.id,
+                                       "Your location has not been determined"
+                                       "Submit your location again",
+                                       reply_markup=markup_start.send_my_geo())
+                await states.UserStart.geo.set()
+            if country and message.reply_to_message.text:
+                await bot.send_message(message.from_user.id,
+                                       "Please check the coordinates, if you made a mistake, "
+                                       "you can send the geolocation again. If everything is ok, "
+                                       "click Enter Main Menu",
+                                       reply_markup=markup_start.start_menu())
+                async with state.proxy() as data:
+                    data["country"] = country
+                    data["state"] = state_
+                    data["city"] = city
+                    data["address"] = address
+                    data["latitude"] = latitude
+                    data["longitude"] = longitude
         except AttributeError:
             await bot.send_message(message.from_user.id,
-                                   "Something went wrong, contact support")
-        await state.finish()
+                                   "Something went wrong\n"
+                                   "You need to click on the submit my location button\n")
 
     @staticmethod
-    async def main(message: types.Message):
-        await bot.send_message(message.from_user.id,
-                               f"{message.from_user.first_name} You are in the main menu",
+    async def main(callback: types.CallbackQuery, state: FSMContext):
+        async with state.proxy() as data:
+            user_set_db_obj.user_add(callback.from_user.id,
+                                     data.get("username"),
+                                     data.get("contact"),
+                                     data.get("first_name"),
+                                     data.get("last_name"))
+            user_set_db_obj.user_set_geo(callback.from_user.id,
+                                         data.get("country"),
+                                         data.get("state"),
+                                         data.get("city"),
+                                         data.get("address"),
+                                         data.get("latitude"),
+                                         data.get("longitude"))
+        await bot.send_message(callback.from_user.id,
+                               f"{callback.from_user.first_name} You are in the main menu",
                                reply_markup=markup_users.main_menu())
         await states.UserStart.user_menu.set()
 
@@ -120,8 +146,8 @@ class UserMain:
                                    f"Your Address: <b>{res[10]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
-        if "Information" in message.text:
-            Information.register_info(dp)
+        if "Locations" in message.text:
+            Locations.register_info(dp)
             await states.Information.info.set()
             await bot.send_message(message.from_user.id,
                                    "Here, you can see information about your friends",
@@ -141,7 +167,7 @@ class UserMain:
         dp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
         dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
                                     state=states.UserStart.geo)
-        dp.register_message_handler(UserMain.main, state=states.UserStart.start)
+        dp.register_callback_query_handler(UserMain.main, state=states.UserStart.geo, text='enter_menu')
         dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
 
 
@@ -164,7 +190,7 @@ class UserProfile:
                                     state=states.UserProfile.my_profile)
 
 
-class Information:
+class Locations:
     @staticmethod
     async def main(message: types.Message):
         await bot.send_message(message.from_user.id,
@@ -193,9 +219,9 @@ class Information:
 
     @staticmethod
     def register_info(dp):
-        dp.register_callback_query_handler(Information.info,
+        dp.register_callback_query_handler(Locations.info,
                                            state=states.Information.info, text='go_info')
-        dp.register_callback_query_handler(Information.main,
+        dp.register_callback_query_handler(Locations.main,
                                            state=states.Information.info, text='main_menu')
 
 

@@ -17,3 +17,10 @@ def start():
     start_1 = InlineKeyboardButton(text='Enter bot', callback_data='enter_bot')
     inline_start.insert(start_1)
     return inline_start
+
+
+def start_menu():
+    inline_start = InlineKeyboardMarkup()
+    start_1 = InlineKeyboardButton(text='Enter Main Menu', callback_data='enter_menu')
+    inline_start.insert(start_1)
+    return inline_start
