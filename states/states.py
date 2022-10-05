@@ -13,6 +13,7 @@ class UserStart(StatesGroup):
 
 class UserProfile(StatesGroup):
     my_profile: State = State()
+    update_location: State = State()
 
 
 class Information(StatesGroup):

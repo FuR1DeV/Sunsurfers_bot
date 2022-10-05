@@ -31,7 +31,7 @@ class UserMain:
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
             await states.UserStart.user_menu.set()
             await bot.send_message(callback.from_user.id,
-                                   "Thank you for using our bot!",
+                                   "<b>Welcome Sunsurfer</b>!",
                                    reply_markup=markup_users.main_menu())
         else:
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
@@ -151,6 +151,8 @@ class UserMain:
                                    f"Your City: <b>{res[9]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
                                    f"Your Address: <b>{res[10]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Last Update: <b>{res[13]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         if "Locations" in message.text:
@@ -189,17 +191,86 @@ class UserProfile:
                                    )
         if "Update Location" in message.text:
             await bot.send_message(message.from_user.id,
-                                   "This is where your location update will be implemented")
+                                   f"{message.from_user.first_name} Update your location",
+                                   reply_markup=markup_start.update_location_send_my_geo())
+            await states.UserProfile.update_location.set()
+
+    @staticmethod
+    async def update_location(message: types.Message, state: FSMContext):
+        try:
+            n = Nominatim(user_agent='User')
+            loc = f"{message.location.latitude}, {message.location.longitude}"
+            location = n.reverse(loc)
+            country = location.raw.get("address").get("country")
+            state_ = location.raw.get("address").get("state")
+            city = location.raw.get("address").get("city")
+            address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
+            latitude = location.raw.get("lat")
+            longitude = location.raw.get("lon")
+            if city is None:
+                city = location.raw.get("address").get("town")
+            await bot.send_message(message.from_user.id,
+                                   f'Country: {country}\n'
+                                   f'State: {state_}\n'
+                                   f'City: {city}\n'
+                                   f'Address: {address}\n')
+            if country is None:
+                await bot.send_message(message.from_user.id,
+                                       "Your location has not been determined"
+                                       "Submit your location again",
+                                       reply_markup=markup_start.update_location())
+            if country and message.reply_to_message.text:
+                await bot.send_message(message.from_user.id,
+                                       "Please check the coordinates, if you made a mistake, "
+                                       "you can send the geolocation again. If everything is ok, "
+                                       "click Enter Main Menu",
+                                       reply_markup=markup_start.update_location())
+                async with state.proxy() as data:
+                    data["country"] = country
+                    data["state"] = state_
+                    data["city"] = city
+                    data["address"] = address
+                    data["latitude"] = latitude
+                    data["longitude"] = longitude
+                    data["time_location"] = str(datetime.now())[:19]
+            print(message.reply_to_message.text)
+        except AttributeError:
+            await bot.send_message(message.from_user.id,
+                                   "Something went wrong\n"
+                                   "You need to click on the submit my location button\n")
+
+    @staticmethod
+    async def update_location_menu(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        async with state.proxy() as data:
+            user_set_db_obj.user_set_geo(callback.from_user.id,
+                                         data.get("country"),
+                                         data.get("state"),
+                                         data.get("city"),
+                                         data.get("address"),
+                                         data.get("latitude"),
+                                         data.get("longitude"),
+                                         data.get("time_location"))
+            await states.UserStart.user_menu.set()
+            await bot.send_message(callback.from_user.id,
+                                   "Update completed!",
+                                   reply_markup=markup_users.main_menu(),
+                                   )
 
     @staticmethod
     def register_user_profile(dp):
         dp.register_message_handler(UserProfile.user_profile,
                                     state=states.UserProfile.my_profile)
+        dp.register_message_handler(UserProfile.update_location, content_types=['location', 'text'],
+                                    state=states.UserProfile.update_location)
+        dp.register_callback_query_handler(UserProfile.update_location_menu,
+                                           state=states.UserProfile.update_location)
 
 
 class Locations:
     @staticmethod
     async def main(message: types.Message):
+        await bot.delete_message(message.from_user.id, message.message.message_id)
         await bot.send_message(message.from_user.id,
                                f"{message.from_user.first_name} You are in the main menu",
                                reply_markup=markup_users.main_menu())

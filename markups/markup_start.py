@@ -24,3 +24,17 @@ def start_menu():
     start_1 = InlineKeyboardButton(text='Enter Main Menu', callback_data='enter_menu')
     inline_start.insert(start_1)
     return inline_start
+
+
+def update_location():
+    inline_update = InlineKeyboardMarkup()
+    start_1 = InlineKeyboardButton(text='Update My Location', callback_data='update_location')
+    inline_update.insert(start_1)
+    return inline_update
+
+
+def update_location_send_my_geo():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    button = KeyboardButton(text='Update my location', request_location=True)
+    keyboard.add(button)
+    return keyboard
