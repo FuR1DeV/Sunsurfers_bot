@@ -40,10 +40,15 @@ class UserMain:
     @staticmethod
     async def phone(message: types.Message, state: FSMContext):
         if message.contact.user_id == message.from_user.id:
+            index = message.contact.phone_number.find("+")
+            if index == 0:
+                telephone = message.contact.phone_number
+            else:
+                telephone = f"+{message.contact.phone_number}"
             async with state.proxy() as data:
                 data["user_id"] = message.from_user.id
                 data["username"] = message.from_user.username
-                data["contact"] = f"+{message.contact.phone_number}"
+                data["contact"] = telephone
                 data["first_name"] = message.from_user.first_name
                 data["last_name"] = message.from_user.last_name
             await states.UserStart.user_menu.set()
