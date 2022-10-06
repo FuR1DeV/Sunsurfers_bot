@@ -14,6 +14,7 @@ class UserStart(StatesGroup):
 class UserProfile(StatesGroup):
     my_profile: State = State()
     update_location: State = State()
+    about_me: State = State()
 
 
 class UserOm(StatesGroup):

@@ -194,6 +194,14 @@ class UserProfile:
                                    "You have returned to the main menu",
                                    reply_markup=markup_users.main_menu(),
                                    )
+        if "About me" in message.text:
+            res = user_get_db_obj.user_about(message.from_user.id)[0]
+            await bot.send_message(message.from_user.id,
+                                   f"Your information about yourself\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<b>{res}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
         if "Update Location" in message.text:
             await bot.send_message(message.from_user.id,
                                    f"{message.from_user.first_name} Update your location",
@@ -201,8 +209,10 @@ class UserProfile:
             await states.UserProfile.update_location.set()
         if "Update About me" in message.text:
             await bot.send_message(message.from_user.id,
-                                   "Here you can edit your information",
+                                   "<b>Here you can edit your information</b>\n"
+                                   "<b>Enter any information about yourself and send me a message</b>",
                                    reply_markup=markup_users.back())
+            await states.UserProfile.about_me.set()
 
     @staticmethod
     async def update_location(message: types.Message, state: FSMContext):
@@ -267,6 +277,20 @@ class UserProfile:
                                    )
 
     @staticmethod
+    async def about_me(message: types.Message):
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            user_set_db_obj.user_set_about_me(message.from_user.id, message.text)
+            await bot.send_message(message.from_user.id,
+                                   "<b>Successfully!</b>",
+                                   reply_markup=markup_users.main_menu())
+            await states.UserStart.user_menu.set()
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await bot.send_message(message.from_user.id,
+                                   "<b>You are back in My Profile</b>",
+                                   reply_markup=markup_users.user_profile())
+            await states.UserProfile.my_profile.set()
+
+    @staticmethod
     def register_user_profile(dp):
         dp.register_message_handler(UserProfile.user_profile,
                                     state=states.UserProfile.my_profile)
@@ -274,6 +298,8 @@ class UserProfile:
                                     state=states.UserProfile.update_location)
         dp.register_callback_query_handler(UserProfile.update_location_menu,
                                            state=states.UserProfile.update_location)
+        dp.register_message_handler(UserProfile.about_me,
+                                    state=states.UserProfile.about_me)
 
 
 class Locations:

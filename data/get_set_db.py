@@ -37,6 +37,16 @@ class UserGetDB(Database):
             )
             return cursor.fetchone()
 
+    def user_about(self, user_id):
+        self.logger.info('User uploads information about himself')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT about FROM users WHERE user_id = %(user_id)s;", {
+                    'user_id': user_id,
+                }
+            )
+            return cursor.fetchone()
+
 
 class UserSetDB(Database):
     logger = logging.getLogger("bot.data.user_set_db")
@@ -71,6 +81,18 @@ class UserSetDB(Database):
                     'latitude': latitude,
                     'longitude': longitude,
                     'updated_location': updated_location,
+                }
+            )
+            self.connection.commit()
+
+    def user_set_about_me(self, user_id, about):
+        self.logger.info(f'The user updates his geo data')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "UPDATE users SET about = %(about)s "
+                "WHERE user_id = %(user_id)s;", {
+                    'user_id': user_id,
+                    'about': about,
                 }
             )
             self.connection.commit()

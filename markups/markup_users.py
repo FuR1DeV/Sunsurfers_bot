@@ -25,6 +25,7 @@ def user_profile():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('WORLD_MAP')} Update Location",
                  f"{config.KEYBOARD.get('CLIPBOARD')} Update About me")
+    keyboard.row(f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} About me")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 
