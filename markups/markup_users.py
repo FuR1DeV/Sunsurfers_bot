@@ -16,7 +16,7 @@ def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} My profile",
                  f"{config.KEYBOARD.get('WORLD_MAP')} Locations")
-    keyboard.row(f"{config.KEYBOARD.get('OM')} OMMMMMM")
+    keyboard.row(f"{config.KEYBOARD.get('OM')} OM")
     keyboard.row(f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     return keyboard
 
@@ -36,7 +36,7 @@ def user_feedback():
     return keyboard
 
 
-def user_ommmmm():
+def user_om():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('NAZAR_AMULET')} Human Design")
     keyboard.row(f"{config.KEYBOARD.get('YIN_YANG')} Gene Keys")

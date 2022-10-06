@@ -9,16 +9,13 @@ class UserStart(StatesGroup):
     geo: State = State()
     start: State = State()
     user_menu: State = State()
+    om: State = State()
 
 
 class UserProfile(StatesGroup):
     my_profile: State = State()
     update_location: State = State()
     about_me: State = State()
-
-
-class UserOm(StatesGroup):
-    start: State = State()
 
 
 class Information(StatesGroup):
