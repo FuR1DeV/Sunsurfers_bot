@@ -159,7 +159,10 @@ class UserMain:
             Locations.register_info(dp)
             await states.Information.info.set()
             await bot.send_message(message.from_user.id,
-                                   "Here, you can see information about your friends",
+                                   "<b>Here</b>",
+                                   reply_markup=markup_users.markup_clean)
+            await bot.send_message(message.from_user.id,
+                                   "<b>You can see information about your friends</b>",
                                    reply_markup=markup_users.go_info())
         if "Feedback" in message.text:
             await bot.send_message(message.from_user.id,
