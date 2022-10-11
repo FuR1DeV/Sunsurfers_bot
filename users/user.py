@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from collections import Counter
 
@@ -276,7 +275,6 @@ class UserProfile:
                         data["latitude"] = latitude
                         data["longitude"] = longitude
                         data["time_location"] = str(datetime.now())[:19]
-                print(message.reply_to_message.text)
             except AttributeError:
                 await bot.send_message(message.from_user.id,
                                        "Something went wrong\n"
@@ -438,6 +436,7 @@ class EnterCountry:
                                            text_contains='user_')
         dp.register_message_handler(EnterCountry.user_info,
                                            state=states.Information.user_info)
+
 
 class Feedback:
     @staticmethod
