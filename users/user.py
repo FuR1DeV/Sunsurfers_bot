@@ -43,7 +43,7 @@ class UserMain:
         try:
             n = Nominatim(user_agent='User')
             loc = f"{message.location.latitude}, {message.location.longitude}"
-            location = n.reverse(loc)
+            location = n.reverse(loc, language='en')
             country = location.raw.get("address").get("country")
             state_ = location.raw.get("address").get("state")
             city = location.raw.get("address").get("city")
@@ -214,7 +214,7 @@ class UserProfile:
             try:
                 n = Nominatim(user_agent='User')
                 loc = f"{message.location.latitude}, {message.location.longitude}"
-                location = n.reverse(loc)
+                location = n.reverse(loc, language='en')
                 country = location.raw.get("address").get("country")
                 state_ = location.raw.get("address").get("state")
                 city = location.raw.get("address").get("city")
@@ -233,7 +233,7 @@ class UserProfile:
                                            "Your location has not been determined"
                                            "Submit your location again",
                                            reply_markup=markup_start.update_location())
-                if country and message.reply_to_message.text:
+                if country:
                     await bot.send_message(message.from_user.id,
                                            "Please check the coordinates, if you made a mistake, "
                                            "you can send the geolocation again. If everything is ok, "
