@@ -71,15 +71,14 @@ class UserGetDB(Database):
 class UserSetDB(Database):
     logger = logging.getLogger("bot.data.user_set_db")
 
-    def user_add(self, user_id, username, telephone, first_name, last_name):
+    def user_add(self, user_id, username, first_name, last_name):
         self.logger.info('The customer adds himself to the database')
         with self.connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO users (user_id, username, telephone, first_name, last_name) "
-                "VALUES (%(user_id)s, %(username)s, %(telephone)s, %(first_name)s, %(last_name)s);", {
+                "INSERT INTO users (user_id, username, first_name, last_name) "
+                "VALUES (%(user_id)s, %(username)s, %(first_name)s, %(last_name)s);", {
                     'user_id': user_id,
                     'username': username,
-                    'telephone': telephone,
                     'first_name': first_name,
                     'last_name': last_name,
                 }

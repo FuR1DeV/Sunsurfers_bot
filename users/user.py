@@ -15,17 +15,19 @@ from states import states
 
 class UserMain:
     @staticmethod
-    async def hi_user(callback: types.CallbackQuery):
+    async def hi_user(callback: types.CallbackQuery, state: FSMContext):
         if not user_get_db_obj.user_exists(callback.from_user.id):
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
-            keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-            button = types.KeyboardButton(text='Phone request', request_contact=True)
-            keyboard.add(button)
+            async with state.proxy() as data:
+                data["user_id"] = callback.from_user.id
+                data["username"] = callback.from_user.username
+                data["first_name"] = callback.from_user.first_name
+                data["last_name"] = callback.from_user.last_name
             await bot.send_message(callback.from_user.id,
-                                   f"{callback.from_user.first_name}\n"
-                                   f"Share with us your phone number!",
-                                   reply_markup=keyboard)
-            await states.UserPhone.phone.set()
+                                   f"{callback.from_user.first_name} In order to use this bot you must "
+                                   f"provide information about your location",
+                                   reply_markup=markup_start.send_my_geo())
+            await states.UserStart.geo.set()
         elif not user_get_db_obj.user_ban(callback.from_user.id)[0]:
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
             await states.UserStart.user_menu.set()
@@ -35,31 +37,6 @@ class UserMain:
         else:
             await bot.delete_message(callback.from_user.id, callback.message.message_id)
             await bot.send_message(callback.from_user.id, "You are blocked! Contact technical support!")
-
-    @staticmethod
-    async def phone(message: types.Message, state: FSMContext):
-        if message.contact.user_id == message.from_user.id:
-            index = message.contact.phone_number.find("+")
-            if index == 0:
-                telephone = message.contact.phone_number
-            else:
-                telephone = f"+{message.contact.phone_number}"
-            async with state.proxy() as data:
-                data["user_id"] = message.from_user.id
-                data["username"] = message.from_user.username
-                data["contact"] = telephone
-                data["first_name"] = message.from_user.first_name
-                data["last_name"] = message.from_user.last_name
-            await states.UserStart.user_menu.set()
-            await bot.send_message(message.from_user.id,
-                                   f"{message.from_user.first_name} In order to use this bot you must "
-                                   f"provide information about your location",
-                                   reply_markup=markup_start.send_my_geo())
-            await states.UserStart.geo.set()
-        else:
-            await bot.send_message(message.from_user.id,
-                                   "This is not your phone number!\n"
-                                   "Press /start to start again")
 
     @staticmethod
     async def geo_position(message: types.Message, state: FSMContext):
@@ -86,7 +63,7 @@ class UserMain:
                                        "Submit your location again",
                                        reply_markup=markup_start.send_my_geo())
                 await states.UserStart.geo.set()
-            if country and message.reply_to_message.text:
+            if country:
                 await bot.send_message(message.from_user.id,
                                        "Please check the coordinates, if you made a mistake, "
                                        "you can send the geolocation again. If everything is ok, "
@@ -110,7 +87,6 @@ class UserMain:
         async with state.proxy() as data:
             user_set_db_obj.user_add(callback.from_user.id,
                                      data.get("username"),
-                                     data.get("contact"),
                                      data.get("first_name"),
                                      data.get("last_name"))
             user_set_db_obj.user_set_geo(callback.from_user.id,
@@ -140,18 +116,16 @@ class UserMain:
                                    f"Your ID: <b>{message.from_user.id}</b>\n"
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Your nickname: <b>@{message.from_user.username}</b>\n"
-                                   f"{config.KEYBOARD.get('TELEPHONE')} "
-                                   f"Your number: <b>{res[3]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your Country: <b>{res[7]}</b>\n"
+                                   f"Your Country: <b>{res[6]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your State: <b>{res[8]}</b>\n"
+                                   f"Your State: <b>{res[7]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your City: <b>{res[9]}</b>\n"
+                                   f"Your City: <b>{res[8]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your Address: <b>{res[10]}</b>\n"
+                                   f"Your Address: <b>{res[9]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Last Update: <b>{res[13]}</b>\n"
+                                   f"Last Update: <b>{res[12]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         if "Locations" in message.text:
@@ -192,8 +166,6 @@ class UserMain:
 
     @staticmethod
     def register_user_handler(dp: Dispatcher):
-        dp.register_message_handler(UserMain.phone, content_types=['contact'],
-                                    state=states.UserPhone.phone)
         dp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
         dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
                                     state=states.UserStart.geo)
@@ -339,7 +311,7 @@ class Locations:
         res = global_get_db_obj.all_users()
         country = []
         for i in res:
-            country.append(i[7])
+            country.append(i[6])
         inline_country = InlineKeyboardMarkup()
         countrys = Counter(country)
         for k, v in countrys.items():
@@ -394,17 +366,17 @@ class EnterCountry:
                                f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                f"Username: <b>@{res[2]}</b>\n"
                                f"{config.KEYBOARD.get('INFORMATION')} "
-                               f"First Name: <b>{res[4]}</b>\n"
+                               f"First Name: <b>{res[3]}</b>\n"
                                f"{config.KEYBOARD.get('INFORMATION')} "
-                               f"Last Name: <b>{res[5]}</b>\n"
+                               f"Last Name: <b>{res[4]}</b>\n"
                                f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"Country: <b>{res[7]}</b>\n"
+                               f"Country: <b>{res[6]}</b>\n"
                                f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"State: <b>{res[8]}</b>\n"
+                               f"State: <b>{res[7]}</b>\n"
                                f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"City: <b>{res[9]}</b>\n"
+                               f"City: <b>{res[8]}</b>\n"
                                f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"Update Location: <b>{res[13]}</b>\n"
+                               f"Update Location: <b>{res[12]}</b>\n"
                                f"{config.KEYBOARD.get('DASH') * 14}",
                                reply_markup=markup_users.user_choose())
         await states.Information.user_info.set()
