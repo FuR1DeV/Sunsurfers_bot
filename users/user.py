@@ -346,6 +346,7 @@ class Locations:
         await bot.send_message(callback.from_user.id,
                                "Select a country or return to the main menu",
                                reply_markup=markup_start.markup_clean)
+        EnterCountry.register_enter_country(dp)
 
     @staticmethod
     def register_info(dp):
@@ -354,6 +355,82 @@ class Locations:
         dp.register_callback_query_handler(Locations.main,
                                            state=states.Information.info, text='main_menu')
 
+
+class EnterCountry:
+    @staticmethod
+    async def country(callback: types.CallbackQuery):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        country = callback.data[8:]
+        await bot.send_message(callback.from_user.id,
+                               f"Great! You choose {country}\n"
+                               f"Here are the people who are in this country")
+        res = global_get_db_obj.all_users_in_country(country)
+        inline_country = InlineKeyboardMarkup()
+        for i in res:
+            inline_country.insert(InlineKeyboardButton(text=f'{i[2]}', callback_data=f'user_{i[2]}'))
+        inline_country.insert(InlineKeyboardButton(text=f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main Menu",
+                                                   callback_data="main_menu"))
+        await bot.send_message(callback.from_user.id,
+                               f"Show all users in the selected country",
+                               reply_markup=inline_country)
+
+    @staticmethod
+    async def user(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        user = callback.data[5:]
+        await bot.send_message(callback.from_user.id,
+                               f"Great! You choose {user}\n"
+                               f"You can view information about this user")
+        async with state.proxy() as data:
+            res = user_get_db_obj.user_get_info_username(callback.from_user.id, user)
+            data["user"] = res
+        await bot.send_message(callback.from_user.id,
+                               f"{config.KEYBOARD.get('DASH') * 14}\n"
+                               f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                               f"Username: <b>@{res[2]}</b>\n"
+                               f"{config.KEYBOARD.get('INFORMATION')} "
+                               f"First Name: <b>{res[4]}</b>\n"
+                               f"{config.KEYBOARD.get('INFORMATION')} "
+                               f"Last Name: <b>{res[5]}</b>\n"
+                               f"{config.KEYBOARD.get('WORLD_MAP')} "
+                               f"Country: <b>{res[7]}</b>\n"
+                               f"{config.KEYBOARD.get('WORLD_MAP')} "
+                               f"State: <b>{res[8]}</b>\n"
+                               f"{config.KEYBOARD.get('WORLD_MAP')} "
+                               f"City: <b>{res[9]}</b>\n"
+                               f"{config.KEYBOARD.get('WORLD_MAP')} "
+                               f"Update Location: <b>{res[13]}</b>\n"
+                               f"{config.KEYBOARD.get('DASH') * 14}",
+                               reply_markup=markup_users.user_choose())
+        await states.Information.user_info.set()
+
+    @staticmethod
+    async def user_info(message: types.Message, state: FSMContext):
+        if "About him/her" in message.text:
+            async with state.proxy() as data:
+                user_res = data.get("user")
+            about = user_get_db_obj.user_about(user_res[1])[0]
+            await bot.send_message(message.from_user.id,
+                                   f"Information about this person\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<b>{about}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}")
+        if "Main menu" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   f"{message.from_user.first_name} You are in the main menu",
+                                   reply_markup=markup_users.main_menu())
+            await states.UserStart.user_menu.set()
+
+    @staticmethod
+    def register_enter_country(dp):
+        dp.register_callback_query_handler(EnterCountry.country,
+                                           state=states.Information.info,
+                                           text_contains='country_')
+        dp.register_callback_query_handler(EnterCountry.user,
+                                           state=states.Information.info,
+                                           text_contains='user_')
+        dp.register_message_handler(EnterCountry.user_info,
+                                           state=states.Information.user_info)
 
 class Feedback:
     @staticmethod

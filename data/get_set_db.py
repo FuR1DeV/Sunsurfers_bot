@@ -13,6 +13,16 @@ class GlobalGetDB(Database):
             )
             return cursor.fetchall()
 
+    def all_users_in_country(self, country):
+        self.logger.info(f'The function of unloading all users in {country}')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM users WHERE country = %(country)s;", {
+                    'country': country,
+                }
+            )
+            return cursor.fetchall()
+
 
 class UserGetDB(Database):
     logger = logging.getLogger("bot.data.user_get_db")
@@ -43,6 +53,16 @@ class UserGetDB(Database):
             cursor.execute(
                 "SELECT about FROM users WHERE user_id = %(user_id)s;", {
                     'user_id': user_id,
+                }
+            )
+            return cursor.fetchone()
+
+    def user_get_info_username(self, user_id, username):
+        self.logger.info(f'User {user_id} views user information')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM users WHERE username = %(username)s;", {
+                    'username': username,
                 }
             )
             return cursor.fetchone()

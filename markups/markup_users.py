@@ -44,6 +44,13 @@ def user_om():
     return keyboard
 
 
+def user_choose():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} About him/her")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
+    return keyboard
+
+
 def go_info():
     inline_go = InlineKeyboardMarkup()
     go = InlineKeyboardButton(text='GO', callback_data='go_info')

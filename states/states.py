@@ -20,6 +20,7 @@ class UserProfile(StatesGroup):
 
 class Information(StatesGroup):
     info: State = State()
+    user_info: State = State()
 
 
 class Feedback(StatesGroup):
