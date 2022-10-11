@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, \
     InlineKeyboardButton, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
 
+from settings import config
 
 markup_clean = ReplyKeyboardRemove()
 
@@ -35,6 +36,8 @@ def update_location():
 
 def update_location_send_my_geo():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    back = KeyboardButton(text=f'{config.KEYBOARD.get("RIGHT_ARROW_CURVING_LEFT")} Back')
     button = KeyboardButton(text='Update my location', request_location=True)
     keyboard.add(button)
+    keyboard.add(back)
     return keyboard

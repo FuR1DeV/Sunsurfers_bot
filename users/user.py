@@ -234,46 +234,53 @@ class UserProfile:
     @staticmethod
     async def update_location(message: types.Message, state: FSMContext):
         try:
-            n = Nominatim(user_agent='User')
-            loc = f"{message.location.latitude}, {message.location.longitude}"
-            location = n.reverse(loc)
-            country = location.raw.get("address").get("country")
-            state_ = location.raw.get("address").get("state")
-            city = location.raw.get("address").get("city")
-            address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
-            latitude = location.raw.get("lat")
-            longitude = location.raw.get("lon")
-            if city is None:
-                city = location.raw.get("address").get("town")
-            await bot.send_message(message.from_user.id,
-                                   f'Country: {country}\n'
-                                   f'State: {state_}\n'
-                                   f'City: {city}\n'
-                                   f'Address: {address}\n')
-            if country is None:
+            if "Back" in message.text:
                 await bot.send_message(message.from_user.id,
-                                       "Your location has not been determined"
-                                       "Submit your location again",
-                                       reply_markup=markup_start.update_location())
-            if country and message.reply_to_message.text:
+                                       "You came back",
+                                       reply_markup=markup_users.user_profile())
+                await states.UserProfile.my_profile.set()
+        except:
+            try:
+                n = Nominatim(user_agent='User')
+                loc = f"{message.location.latitude}, {message.location.longitude}"
+                location = n.reverse(loc)
+                country = location.raw.get("address").get("country")
+                state_ = location.raw.get("address").get("state")
+                city = location.raw.get("address").get("city")
+                address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
+                latitude = location.raw.get("lat")
+                longitude = location.raw.get("lon")
+                if city is None:
+                    city = location.raw.get("address").get("town")
                 await bot.send_message(message.from_user.id,
-                                       "Please check the coordinates, if you made a mistake, "
-                                       "you can send the geolocation again. If everything is ok, "
-                                       "click Enter Main Menu",
-                                       reply_markup=markup_start.update_location())
-                async with state.proxy() as data:
-                    data["country"] = country
-                    data["state"] = state_
-                    data["city"] = city
-                    data["address"] = address
-                    data["latitude"] = latitude
-                    data["longitude"] = longitude
-                    data["time_location"] = str(datetime.now())[:19]
-            print(message.reply_to_message.text)
-        except AttributeError:
-            await bot.send_message(message.from_user.id,
-                                   "Something went wrong\n"
-                                   "You need to click on the submit my location button\n")
+                                       f'Country: {country}\n'
+                                       f'State: {state_}\n'
+                                       f'City: {city}\n'
+                                       f'Address: {address}\n')
+                if country is None:
+                    await bot.send_message(message.from_user.id,
+                                           "Your location has not been determined"
+                                           "Submit your location again",
+                                           reply_markup=markup_start.update_location())
+                if country and message.reply_to_message.text:
+                    await bot.send_message(message.from_user.id,
+                                           "Please check the coordinates, if you made a mistake, "
+                                           "you can send the geolocation again. If everything is ok, "
+                                           "click Enter Main Menu",
+                                           reply_markup=markup_start.update_location())
+                    async with state.proxy() as data:
+                        data["country"] = country
+                        data["state"] = state_
+                        data["city"] = city
+                        data["address"] = address
+                        data["latitude"] = latitude
+                        data["longitude"] = longitude
+                        data["time_location"] = str(datetime.now())[:19]
+                print(message.reply_to_message.text)
+            except AttributeError:
+                await bot.send_message(message.from_user.id,
+                                       "Something went wrong\n"
+                                       "You need to click on the submit my location button\n")
 
     @staticmethod
     async def update_location_menu(callback: types.CallbackQuery, state: FSMContext):
