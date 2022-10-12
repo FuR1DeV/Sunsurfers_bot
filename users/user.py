@@ -129,14 +129,19 @@ class UserMain:
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         if "Locations" in message.text:
-            Locations.register_info(dp)
-            await states.Information.info.set()
+            res = global_get_db_obj.all_users()
+            country = []
+            for i in res:
+                country.append(i[6])
+            inline_country = InlineKeyboardMarkup()
+            countrys = Counter(country)
+            for k, v in countrys.items():
+                inline_country.insert(InlineKeyboardButton(text=f'{k} ({v})', callback_data=f'country_{k}'))
             await bot.send_message(message.from_user.id,
-                                   "<b>Here</b>",
-                                   reply_markup=markup_users.user_feedback())
-            await bot.send_message(message.from_user.id,
-                                   "<b>You can see information about your friends</b>",
-                                   reply_markup=markup_users.go_info())
+                                   f"Display all countries in which there are friends",
+                                   reply_markup=inline_country)
+            EnterCountry.register_enter_country(dp)
+            await states.UserStart.user_menu.set()
         if "Feedback" in message.text:
             await bot.send_message(message.from_user.id,
                                    "Describe your problem\n"
@@ -302,43 +307,6 @@ class UserProfile:
                                     state=states.UserProfile.about_me)
 
 
-class Locations:
-    @staticmethod
-    async def main(message: types.Message):
-        await bot.delete_message(message.from_user.id, message.message.message_id)
-        await bot.send_message(message.from_user.id,
-                               f"{message.from_user.first_name} You are in the main menu",
-                               reply_markup=markup_users.main_menu())
-        await states.UserStart.user_menu.set()
-
-    @staticmethod
-    async def info(callback: types.CallbackQuery):
-        await bot.delete_message(callback.from_user.id, callback.message.message_id)
-        res = global_get_db_obj.all_users()
-        country = []
-        for i in res:
-            country.append(i[6])
-        inline_country = InlineKeyboardMarkup()
-        countrys = Counter(country)
-        for k, v in countrys.items():
-            inline_country.insert(InlineKeyboardButton(text=f'{k} ({v})', callback_data=f'country_{k}'))
-        inline_country.insert(InlineKeyboardButton(text="Back", callback_data="main_menu"))
-        await bot.send_message(callback.from_user.id,
-                               f"Display all countries in which there are friends",
-                               reply_markup=inline_country)
-        await bot.send_message(callback.from_user.id,
-                               "Select a country or return to the main menu",
-                               reply_markup=markup_users.user_feedback())
-        EnterCountry.register_enter_country(dp)
-
-    @staticmethod
-    def register_info(dp):
-        dp.register_callback_query_handler(Locations.info,
-                                           state=states.Information.info, text='go_info')
-        dp.register_callback_query_handler(Locations.main,
-                                           state=states.Information.info, text='main_menu')
-
-
 class EnterCountry:
     @staticmethod
     async def country(callback: types.CallbackQuery):
@@ -346,14 +314,11 @@ class EnterCountry:
         country = callback.data[8:]
         await bot.send_message(callback.from_user.id,
                                f"Great! You choose {country}\n"
-                               f"Here are the people who are in this country",
-                               reply_markup=markup_users.user_feedback())
+                               f"Here are the people who are in this country")
         res = global_get_db_obj.all_users_in_country(country)
         inline_country = InlineKeyboardMarkup()
         for i in res:
             inline_country.insert(InlineKeyboardButton(text=f'{i[2]}', callback_data=f'user_{i[2]}'))
-        inline_country.insert(InlineKeyboardButton(text=f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main Menu",
-                                                   callback_data="main_menu"))
         await bot.send_message(callback.from_user.id,
                                f"Show all users in the selected country",
                                reply_markup=inline_country)
@@ -408,10 +373,10 @@ class EnterCountry:
     @staticmethod
     def register_enter_country(dp):
         dp.register_callback_query_handler(EnterCountry.country,
-                                           state=states.Information.info,
+                                           state=states.UserStart.user_menu,
                                            text_contains='country_')
         dp.register_callback_query_handler(EnterCountry.user,
-                                           state=states.Information.info,
+                                           state=states.UserStart.user_menu,
                                            text_contains='user_')
         dp.register_message_handler(EnterCountry.user_info,
                                     state=states.Information.user_info)
