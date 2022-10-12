@@ -18,6 +18,7 @@ ADMIN_ID = str(os.getenv('ADMIN_ID')).split(',')
 KEYBOARD = {
     'DASH': emojize(':minus:'),
     'OM': emojize(':om:'),
+    'FOLDED_HANDS': emojize(':folded_hands:'),
     'NAZAR_AMULET': emojize(':nazar_amulet:'),
     'YIN_YANG': emojize(':yin_yang:'),
     'SMILING_FACE_WITH_SUNGLASSES': emojize(':smiling_face_with_sunglasses:'),
@@ -51,4 +52,19 @@ KEYBOARD = {
     'WORLD_MAP': emojize(':world_map:'),
     'SUN': emojize(':sun:'),
     'RIGHT_ARROW_CURVING_LEFT': emojize(':right_arrow_curving_left:'),
+}
+
+COUNTRIES = {
+    'THAILAND': emojize(':Thailand:'),
+    'INDIA': emojize(':India:'),
+    'VIETNAM': emojize(':Vietnam:'),
+    'PHILIPPINES': emojize(':Philippines:'),
+    'GEORGIA': emojize(':Georgia:'),
+    'INDONESIA': emojize(':Indonesia:'),
+    'NEPAL': emojize(':Nepal:'),
+    'MOROCCO': emojize(':Morocco:'),
+    'TURKEY': emojize(':Turkey:'),
+    'MEXICO': emojize(':Mexico:'),
+    'SRI-LANKA': emojize(':Sri_Lanka:'),
+    'ALBANIA': emojize(':Albania:'),
 }

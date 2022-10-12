@@ -116,6 +116,21 @@ class UserSetDB(Database):
             )
             self.connection.commit()
 
+    def user_set_sun_gathering(self, user_id, username, first_name, last_name, sun_gathering):
+        self.logger.info(f'The user set sun gathering')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"INSERT INTO sun_gathering_{sun_gathering} (user_id, username, first_name, last_name) "
+                "VALUES (%(user_id)s, %(username)s, %(first_name)s, %(last_name)s);", {
+                    'user_id': user_id,
+                    'username': username,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'sun_gathering': sun_gathering,
+                }
+            )
+            self.connection.commit()
+
 
 global_get_db_obj = GlobalGetDB()
 user_get_db_obj = UserGetDB()

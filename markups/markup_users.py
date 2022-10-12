@@ -46,7 +46,7 @@ def user_om():
 
 def services():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('OM')} OM",
+    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} OM",
                  f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard

@@ -22,8 +22,9 @@ class Information(StatesGroup):
     user_info: State = State()
 
 
-class SunGathering(StatesGroup):
+class Sun(StatesGroup):
     sun_menu: State = State()
+    about: State = State()
 
 
 class Services(StatesGroup):

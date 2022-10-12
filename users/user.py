@@ -152,7 +152,7 @@ class UserMain:
             await bot.send_message(message.from_user.id,
                                    "Here you can view information about SunGatherings",
                                    reply_markup=markup_users.sun_gathering_menu())
-            await states.SunGathering.sun_menu.set()
+            await states.Sun.sun_menu.set()
             SunGathering.register_sun_gathering(dp)
 
     @staticmethod
@@ -363,15 +363,24 @@ class EnterCountry:
 
 class SunGathering:
     @staticmethod
-    async def sun_gathering_main(message: types.Message):
+    async def sun_main(message: types.Message):
         if "Main menu" in message.text:
             await states.UserStart.user_menu.set()
             await bot.send_message(message.from_user.id,
                                    "You have returned to the main menu",
                                    reply_markup=markup_users.main_menu())
         if "Choose SunGathering" in message.text:
-            countries = ["Thailand", "India", "Vietnam", "Philippines", "Georgia", "Indonesia",
-                         "Nepal", "Morocco", "Turkey", "Mexico", "Sri-Lanka"]
+            countries = [f"{config.COUNTRIES.get('THAILAND')} Thailand",
+                         f"{config.COUNTRIES.get('INDIA')} India",
+                         f"{config.COUNTRIES.get('VIETNAM')} Vietnam",
+                         f"{config.COUNTRIES.get('PHILIPPINES')} Philippines",
+                         f"{config.COUNTRIES.get('GEORGIA')} Georgia",
+                         f"{config.COUNTRIES.get('INDONESIA')} Indonesia",
+                         f"{config.COUNTRIES.get('NEPAL')} Nepal",
+                         f"{config.COUNTRIES.get('MOROCCO')} Morocco",
+                         f"{config.COUNTRIES.get('TURKEY')} Turkey",
+                         f"{config.COUNTRIES.get('MEXICO')} Mexico",
+                         f"{config.COUNTRIES.get('SRI-LANKA')} SriLanka"]
             inline_gathering = InlineKeyboardMarkup()
             v = 1
             for i in countries:
@@ -382,7 +391,11 @@ class SunGathering:
                                    f"Choose the SunGathering you were in",
                                    reply_markup=inline_gathering)
         if "Choose SunUniversity" in message.text:
-            countries = ["India", "Sri-Lanka", "Turkey", "Thailand", "Albania"]
+            countries = [f"{config.COUNTRIES.get('INDIA')} India",
+                         f"{config.COUNTRIES.get('SRI-LANKA')} SriLanka",
+                         f"{config.COUNTRIES.get('TURKEY')} Turkey",
+                         f"{config.COUNTRIES.get('THAILAND')} Thailand",
+                         f"{config.COUNTRIES.get('ALBANIA')} Albania"]
             inline_university = InlineKeyboardMarkup()
             v = 1
             for i in countries:
@@ -394,9 +407,33 @@ class SunGathering:
                                    reply_markup=inline_university)
 
     @staticmethod
+    async def select_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
+        res = callback.data.split()[1]
+        user_set_db_obj.user_set_sun_gathering(callback.from_user.id,
+                                               callback.from_user.username,
+                                               callback.from_user.first_name,
+                                               callback.from_user.last_name,
+                                               res.lower())
+        async with state.proxy() as data:
+            data["sun_gathering_country"] = res
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        await bot.send_message(callback.from_user.id,
+                               f"Great you were at this event! <b>SunGathering - {res}</b>\n"
+                               f"Now describe your impressions of this event (optional)",
+                               reply_markup=markup_users.markup_clean)
+        await states.Sun.about.set()
+
+    @staticmethod
+    async def about_sun_gathering():
+        pass
+
+    @staticmethod
     def register_sun_gathering(dp):
-        dp.register_message_handler(SunGathering.sun_gathering_main,
-                                    state=states.SunGathering.sun_menu)
+        dp.register_message_handler(SunGathering.sun_main,
+                                    state=states.Sun.sun_menu)
+        dp.register_callback_query_handler(SunGathering.select_sun_gathering,
+                                           state=states.Sun.sun_menu,
+                                           text_contains='sun_gathering_')
 
 
 class Services:
