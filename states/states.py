@@ -24,6 +24,7 @@ class Information(StatesGroup):
 
 class Sun(StatesGroup):
     sun_menu: State = State()
+    country_menu: State = State()
     about: State = State()
 
 

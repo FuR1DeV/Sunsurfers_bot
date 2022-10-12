@@ -23,6 +23,18 @@ class GlobalGetDB(Database):
             )
             return cursor.fetchall()
 
+    def check_user_sun_gathering(self, user_id, country):
+        self.logger.info(f'The function checks if there was a person at this gathering')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT * FROM sun_gathering_{country} "
+                f"WHERE user_id = %(user_id)s;", {
+                    'country': country,
+                    'user_id': user_id,
+                }
+            )
+            return cursor.fetchone()
+
 
 class UserGetDB(Database):
     logger = logging.getLogger("bot.data.user_get_db")
@@ -63,6 +75,17 @@ class UserGetDB(Database):
             cursor.execute(
                 "SELECT * FROM users WHERE username = %(username)s;", {
                     'username': username,
+                }
+            )
+            return cursor.fetchone()
+
+    def user_get_info_country(self, user_id, country):
+        self.logger.info(f'User checks info about sun gathering in country')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT * FROM sun_gathering_{country} "
+                f"WHERE user_id = %(user_id)s;", {
+                    'user_id': user_id,
                 }
             )
             return cursor.fetchone()
@@ -127,6 +150,18 @@ class UserSetDB(Database):
                     'first_name': first_name,
                     'last_name': last_name,
                     'sun_gathering': sun_gathering,
+                }
+            )
+            self.connection.commit()
+
+    def user_set_sun_gathering_about(self, user_id, country, about):
+        self.logger.info(f'The user updates about SunGathering {country}')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"UPDATE sun_gathering_{country} SET about_sun_gathering = %(about)s "
+                "WHERE user_id = %(user_id)s;", {
+                    'user_id': user_id,
+                    'about': about,
                 }
             )
             self.connection.commit()

@@ -22,6 +22,8 @@ KEYBOARD = {
     'NAZAR_AMULET': emojize(':nazar_amulet:'),
     'YIN_YANG': emojize(':yin_yang:'),
     'SMILING_FACE_WITH_SUNGLASSES': emojize(':smiling_face_with_sunglasses:'),
+    'WAVING_HAND': emojize(':waving_hand:'),
+    'SUNRISE': emojize(':sunrise:'),
     'BUST_IN_SILHOUETTE': emojize(':bust_in_silhouette:'),
     'HAMMER_AND_PICK': emojize(':hammer_and_pick:'),
     'SOS_BUTTON': emojize(':SOS_button:'),

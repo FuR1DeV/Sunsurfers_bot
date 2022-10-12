@@ -60,6 +60,15 @@ def sun_gathering_menu():
     return keyboard
 
 
+def sun_gathering_menu_select_country():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
+                 f"{config.KEYBOARD.get('WAVING_HAND')} I was there!")
+    keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
+    return keyboard
+
+
 def user_choose():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} About him/her")
@@ -67,13 +76,14 @@ def user_choose():
     return keyboard
 
 
-def go_info():
-    inline_go = InlineKeyboardMarkup()
-    go = InlineKeyboardButton(text='GO', callback_data='go_info')
-    inline_go.insert(go)
-    return inline_go
+def about_sun_gathering():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('CROSS_MARK')} Cancel")
+    return keyboard
 
 
-def sun_gathering():
-
-    return inline_go
+def add_event():
+    inline_add = InlineKeyboardMarkup()
+    add = InlineKeyboardButton(text='Add to this event', callback_data='add_to_event')
+    inline_add.insert(add)
+    return inline_add
