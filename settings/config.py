@@ -49,5 +49,6 @@ KEYBOARD = {
     'B_BUTTON': emojize(':B_button_(blood_type):'),
     'INPUT_LATIN_LETTERS': emojize(':input_latin_letters:'),
     'WORLD_MAP': emojize(':world_map:'),
+    'SUN': emojize(':sun:'),
     'RIGHT_ARROW_CURVING_LEFT': emojize(':right_arrow_curving_left:'),
 }

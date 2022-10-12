@@ -16,7 +16,8 @@ def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} My profile",
                  f"{config.KEYBOARD.get('WORLD_MAP')} Locations")
-    keyboard.row(f"{config.KEYBOARD.get('OM')} OM")
+    keyboard.row(f"{config.KEYBOARD.get('OM')} OM",
+                 f"{config.KEYBOARD.get('SUN')} SunGatherings")
     keyboard.row(f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     return keyboard
 
@@ -44,6 +45,14 @@ def user_om():
     return keyboard
 
 
+def sun_gathering_menu():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('SUN')} Choose SunGathering",
+                 f"{config.KEYBOARD.get('SUN')} Choose SunUniversity")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
+    return keyboard
+
+
 def user_choose():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} About him/her")
@@ -55,4 +64,9 @@ def go_info():
     inline_go = InlineKeyboardMarkup()
     go = InlineKeyboardButton(text='GO', callback_data='go_info')
     inline_go.insert(go)
+    return inline_go
+
+
+def sun_gathering():
+
     return inline_go

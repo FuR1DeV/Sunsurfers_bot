@@ -133,7 +133,7 @@ class UserMain:
             await states.Information.info.set()
             await bot.send_message(message.from_user.id,
                                    "<b>Here</b>",
-                                   reply_markup=markup_users.markup_clean)
+                                   reply_markup=markup_users.user_feedback())
             await bot.send_message(message.from_user.id,
                                    "<b>You can see information about your friends</b>",
                                    reply_markup=markup_users.go_info())
@@ -149,6 +149,12 @@ class UserMain:
                                    "Here you can get Human Design, Gene Keys",
                                    reply_markup=markup_users.user_om())
             await states.UserStart.om.set()
+        if "SunGatherings" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Here you can view information about SunGatherings",
+                                   reply_markup=markup_users.sun_gathering_menu())
+            await states.SunGathering.sun_menu.set()
+            SunGathering.register_sun_gathering(dp)
 
     @staticmethod
     async def om(message: types.Message):
@@ -322,7 +328,7 @@ class Locations:
                                reply_markup=inline_country)
         await bot.send_message(callback.from_user.id,
                                "Select a country or return to the main menu",
-                               reply_markup=markup_start.markup_clean)
+                               reply_markup=markup_users.user_feedback())
         EnterCountry.register_enter_country(dp)
 
     @staticmethod
@@ -340,7 +346,8 @@ class EnterCountry:
         country = callback.data[8:]
         await bot.send_message(callback.from_user.id,
                                f"Great! You choose {country}\n"
-                               f"Here are the people who are in this country")
+                               f"Here are the people who are in this country",
+                               reply_markup=markup_users.user_feedback())
         res = global_get_db_obj.all_users_in_country(country)
         inline_country = InlineKeyboardMarkup()
         for i in res:
@@ -407,7 +414,45 @@ class EnterCountry:
                                            state=states.Information.info,
                                            text_contains='user_')
         dp.register_message_handler(EnterCountry.user_info,
-                                           state=states.Information.user_info)
+                                    state=states.Information.user_info)
+
+
+class SunGathering:
+    @staticmethod
+    async def sun_gathering_main(message: types.Message):
+        if "Main menu" in message.text:
+            await states.UserStart.user_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   "You have returned to the main menu",
+                                   reply_markup=markup_users.main_menu())
+        if "Choose SunGathering" in message.text:
+            countries = ["Thailand", "India", "Vietnam", "Philippines", "Georgia", "Indonesia",
+                         "Nepal", "Morocco", "Turkey", "Mexico", "Sri-Lanka"]
+            inline_gathering = InlineKeyboardMarkup()
+            v = 1
+            for i in countries:
+                inline_gathering.insert(InlineKeyboardButton(text=f'{v}.0 {i}',
+                                                             callback_data=f'sun_gathering_{i}'))
+                v += 1
+            await bot.send_message(message.from_user.id,
+                                   f"Choose the SunGathering you were in",
+                                   reply_markup=inline_gathering)
+        if "Choose SunUniversity" in message.text:
+            countries = ["India", "Sri-Lanka", "Turkey", "Thailand", "Albania"]
+            inline_university = InlineKeyboardMarkup()
+            v = 1
+            for i in countries:
+                inline_university.insert(InlineKeyboardButton(text=f'{v}.0 {i}',
+                                                              callback_data=f'sun_university_{i}'))
+                v += 1
+            await bot.send_message(message.from_user.id,
+                                   f"Choose the SunUniversity you were in",
+                                   reply_markup=inline_university)
+
+    @staticmethod
+    def register_sun_gathering(dp):
+        dp.register_message_handler(SunGathering.sun_gathering_main,
+                                    state=states.SunGathering.sun_menu)
 
 
 class Feedback:

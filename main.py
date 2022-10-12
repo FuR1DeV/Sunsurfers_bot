@@ -1,13 +1,9 @@
 from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
-from geopy import Nominatim
 
 from bot import dp, bot
-from data import create_db, get_set_db
 from users.user import UserMain
 from markups import markup_start
-from settings import config
-from states import states
 
 
 @dp.message_handler(commands='start', state='*')

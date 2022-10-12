@@ -23,5 +23,9 @@ class Information(StatesGroup):
     user_info: State = State()
 
 
+class SunGathering(StatesGroup):
+    sun_menu: State = State()
+
+
 class Feedback(StatesGroup):
     help: State = State()
