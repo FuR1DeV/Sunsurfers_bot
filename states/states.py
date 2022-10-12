@@ -9,7 +9,6 @@ class UserStart(StatesGroup):
     geo: State = State()
     start: State = State()
     user_menu: State = State()
-    om: State = State()
 
 
 class UserProfile(StatesGroup):
@@ -27,5 +26,7 @@ class SunGathering(StatesGroup):
     sun_menu: State = State()
 
 
-class Feedback(StatesGroup):
+class Services(StatesGroup):
+    start: State = State()
     help: State = State()
+    om: State = State()

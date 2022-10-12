@@ -142,18 +142,12 @@ class UserMain:
                                    reply_markup=inline_country)
             EnterCountry.register_enter_country(dp)
             await states.UserStart.user_menu.set()
-        if "Feedback" in message.text:
+        if "Services" in message.text:
             await bot.send_message(message.from_user.id,
-                                   "Describe your problem\n"
-                                   "When you're done, you can return to the main menu",
-                                   reply_markup=markup_users.user_feedback())
-            Feedback.register_feedback(dp)
-            await states.Feedback.help.set()
-        if "OM" in message.text:
-            await bot.send_message(message.from_user.id,
-                                   "Here you can get Human Design, Gene Keys",
-                                   reply_markup=markup_users.user_om())
-            await states.UserStart.om.set()
+                                   "Here are the services that can be implemented in the future",
+                                   reply_markup=markup_users.services())
+            await states.Services.start.set()
+            Services.register_services(dp)
         if "SunGatherings" in message.text:
             await bot.send_message(message.from_user.id,
                                    "Here you can view information about SunGatherings",
@@ -162,27 +156,12 @@ class UserMain:
             SunGathering.register_sun_gathering(dp)
 
     @staticmethod
-    async def om(message: types.Message):
-        if "Gene Keys" in message.text:
-            await bot.send_message(message.from_user.id, "Will be implemented here (if needed)\n"
-                                                         "Gene Keys")
-        if "Human Design" in message.text:
-            await bot.send_message(message.from_user.id, "Will be implemented here (if needed)\n"
-                                                         "Human Design")
-        if "Main menu" in message.text:
-            await states.UserStart.user_menu.set()
-            await bot.send_message(message.from_user.id,
-                                   "You have returned to the main menu",
-                                   reply_markup=markup_users.main_menu())
-
-    @staticmethod
     def register_user_handler(dp: Dispatcher):
         dp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
         dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
                                     state=states.UserStart.geo)
         dp.register_callback_query_handler(UserMain.main, state=states.UserStart.geo, text='enter_menu')
         dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
-        dp.register_message_handler(UserMain.om, state=states.UserStart.om)
 
 
 class UserProfile:
@@ -420,25 +399,62 @@ class SunGathering:
                                     state=states.SunGathering.sun_menu)
 
 
-class Feedback:
+class Services:
+    @staticmethod
+    async def services(message: types.Message):
+        if "Feedback" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Describe your problem\n"
+                                   "When you're done, you can return to the main menu",
+                                   reply_markup=markup_users.user_feedback())
+            await states.Services.help.set()
+        if "OM" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Here you can get Human Design, Gene Keys",
+                                   reply_markup=markup_users.user_om())
+            await states.Services.om.set()
+        if "Main menu" in message.text:
+            await states.UserStart.user_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   "You have returned to the main menu",
+                                   reply_markup=markup_users.main_menu())
+
     @staticmethod
     async def help(message: types.Message):
-        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
-                                   f"{message.from_user.first_name} You are in the main menu",
-                                   reply_markup=markup_users.main_menu())
-            await states.UserStart.user_menu.set()
-        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
+                                   f"{message.from_user.first_name} You are in the services",
+                                   reply_markup=markup_users.services())
+            await states.Services.start.set()
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message('@sunsurfers_bot_help',
                                    f"Name {message.from_user.first_name}\n"
                                    f"ID {message.from_user.id}\n"
                                    f"Message - <b>{message.text}</b>\n")
-            await states.UserStart.user_menu.set()
+            await states.Services.start.set()
             await bot.send_message(message.from_user.id,
                                    "Message sent to tech support!",
-                                   reply_markup=markup_users.main_menu())
+                                   reply_markup=markup_users.services())
 
     @staticmethod
-    def register_feedback(dp):
-        dp.register_message_handler(Feedback.help,
-                                    state=states.Feedback.help)
+    async def om(message: types.Message):
+        if "Gene Keys" in message.text:
+            await bot.send_message(message.from_user.id, "Will be implemented here (if needed)\n"
+                                                         "Gene Keys")
+        if "Human Design" in message.text:
+            await bot.send_message(message.from_user.id, "Will be implemented here (if needed)\n"
+                                                         "Human Design")
+        if "Back" in message.text:
+            await states.Services.start.set()
+            await bot.send_message(message.from_user.id,
+                                   "You have returned to the services",
+                                   reply_markup=markup_users.services())
+
+    @staticmethod
+    def register_services(dp):
+        dp.register_message_handler(Services.services,
+                                    state=states.Services.start)
+        dp.register_message_handler(Services.help,
+                                    state=states.Services.help)
+        dp.register_message_handler(Services.om,
+                                    state=states.Services.om)

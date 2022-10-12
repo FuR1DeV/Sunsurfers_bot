@@ -16,9 +16,8 @@ def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} My profile",
                  f"{config.KEYBOARD.get('WORLD_MAP')} Locations")
-    keyboard.row(f"{config.KEYBOARD.get('OM')} OM",
+    keyboard.row(f"{config.KEYBOARD.get('WRENCH')} Services",
                  f"{config.KEYBOARD.get('SUN')} SunGatherings")
-    keyboard.row(f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     return keyboard
 
 
@@ -33,7 +32,7 @@ def user_profile():
 
 def user_feedback():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back")
     return keyboard
 
 
@@ -41,6 +40,14 @@ def user_om():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('NAZAR_AMULET')} Human Design")
     keyboard.row(f"{config.KEYBOARD.get('YIN_YANG')} Gene Keys")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back")
+    return keyboard
+
+
+def services():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('OM')} OM",
+                 f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 
