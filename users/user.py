@@ -448,9 +448,13 @@ class SunGathering:
     @staticmethod
     async def add_person_to_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
-        async with state.proxy() as data:
-            res = user_get_db_obj.user_get_info_country(callback.from_user.id,
-                                                        data.get("sun_gathering_country"))[0]
+        res = None
+        try:
+            async with state.proxy() as data:
+                res = user_get_db_obj.user_get_info_country(callback.from_user.id,
+                                                            data.get("sun_gathering_country"))[0]
+        except TypeError:
+            pass
         if res is None:
             async with state.proxy() as data:
                 user_set_db_obj.user_set_sun_gathering(callback.from_user.id,
