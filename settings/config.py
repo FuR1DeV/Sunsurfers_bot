@@ -56,6 +56,7 @@ KEYBOARD = {
     'RIGHT_ARROW': emojize(':right_arrow:'),
     'LEFT_ARROW': emojize(':left_arrow:'),
     'UP!_BUTTON': emojize(':UP!_button:'),
+    'MINUS': emojize(':minus:'),
     'RIGHT_ARROW_CURVING_LEFT': emojize(':right_arrow_curving_left:'),
 }
 

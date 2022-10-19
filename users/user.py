@@ -49,17 +49,30 @@ class UserMain:
             province = location.raw.get("address").get("province")
             city = location.raw.get("address").get("city")
             town = location.raw.get("address").get("town")
-            address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
+            road = location.raw.get("address").get("road")
+            house = location.raw.get("address").get("house_number")
+            if road is None:
+                road = f"{config.KEYBOARD.get('MINUS')}"
+            if house is None:
+                house = f"{config.KEYBOARD.get('MINUS')}"
+            address = f'{road} - {house}'
             latitude = location.raw.get("lat")
             longitude = location.raw.get("lon")
-            print(location.raw)
+            if state_ is None:
+                state_ = f"{config.KEYBOARD.get('MINUS')}"
+            if province is None:
+                province = f"{config.KEYBOARD.get('MINUS')}"
+            if city is None:
+                city = f"{config.KEYBOARD.get('MINUS')}"
+            if town is None:
+                town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
-                                   f'Country: {country}\n'
-                                   f'State: {state_}\n'
-                                   f'Province: {province}\n'
-                                   f'City: {city}\n'
-                                   f'Town: {town}\n'
-                                   f'Address: {address}\n')
+                                   f'Country: <b>{country}</b>\n'
+                                   f'State: <b>{state_}</b>\n'
+                                   f'Province: <b>{province}</b>\n'
+                                   f'City: <b>{city}</b>\n'
+                                   f'Town: <b>{town}</b>\n'
+                                   f'Address: <b>{address}</b>\n')
             if country is None:
                 await bot.send_message(message.from_user.id,
                                        "Your location has not been determined"
@@ -89,6 +102,7 @@ class UserMain:
 
     @staticmethod
     async def main(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
         async with state.proxy() as data:
             user_set_db_obj.user_add(callback.from_user.id,
                                      data.get("username"),
@@ -116,6 +130,7 @@ class UserMain:
             UserProfile.register_user_profile(dp)
             res = user_get_db_obj.user_exists(message.from_user.id)
             await states.UserProfile.my_profile.set()
+            state_, province, city, town, address = res[7], res[8], res[9], res[10], res[11]
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"Your Profile:\n"
@@ -126,15 +141,15 @@ class UserMain:
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
                                    f"Your Country: <b>{res[6]}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your State: <b>{res[7]}</b>\n"
+                                   f"Your State: <b>{state_}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Province: <b>{res[8]}</b>\n"
+                                   f"Your Province: <b>{province}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your City: <b>{res[9]}</b>\n"
+                                   f"Your City: <b>{city}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Town: <b>{res[10]}</b>\n"
+                                   f"Your Town: <b>{town}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Address: <b>{res[11]}</b>\n"
+                                   f"Your Address: <b>{address}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
                                    f"Last Update: <b>{res[14]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -221,16 +236,30 @@ class UserProfile:
                 province = location.raw.get("address").get("province")
                 city = location.raw.get("address").get("city")
                 town = location.raw.get("address").get("town")
-                address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
+                road = location.raw.get("address").get("road")
+                house = location.raw.get("address").get("house_number")
+                if road is None:
+                    road = f"{config.KEYBOARD.get('MINUS')}"
+                if house is None:
+                    house = f"{config.KEYBOARD.get('MINUS')}"
+                address = f'{road} - {house}'
                 latitude = location.raw.get("lat")
                 longitude = location.raw.get("lon")
+                if state_ is None:
+                    state_ = f"{config.KEYBOARD.get('MINUS')}"
+                if province is None:
+                    province = f"{config.KEYBOARD.get('MINUS')}"
+                if city is None:
+                    city = f"{config.KEYBOARD.get('MINUS')}"
+                if town is None:
+                    town = f"{config.KEYBOARD.get('MINUS')}"
                 await bot.send_message(message.from_user.id,
-                                       f'Country: {country}\n'
-                                       f'State: {state_}\n'
-                                       f'Province: {province}\n'
-                                       f'City: {city}\n'
-                                       f'Town: {town}\n'
-                                       f'Address: {address}\n')
+                                       f'Country: <b>{country}</b>\n'
+                                       f'State: <b>{state_}</b>\n'
+                                       f'Province: <b>{province}</b>\n'
+                                       f'City: <b>{city}</b>\n'
+                                       f'Town: <b>{town}</b>\n'
+                                       f'Address: <b>{address}</b>\n')
                 if country is None:
                     await bot.send_message(message.from_user.id,
                                            "Your location has not been determined"
