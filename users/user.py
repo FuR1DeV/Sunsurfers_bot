@@ -46,16 +46,19 @@ class UserMain:
             location = n.reverse(loc, language='en')
             country = location.raw.get("address").get("country")
             state_ = location.raw.get("address").get("state")
+            province = location.raw.get("address").get("province")
             city = location.raw.get("address").get("city")
+            town = location.raw.get("address").get("town")
             address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
             latitude = location.raw.get("lat")
             longitude = location.raw.get("lon")
-            if city is None:
-                city = location.raw.get("address").get("town")
+            print(location.raw)
             await bot.send_message(message.from_user.id,
                                    f'Country: {country}\n'
                                    f'State: {state_}\n'
+                                   f'Province: {province}\n'
                                    f'City: {city}\n'
+                                   f'Town: {town}\n'
                                    f'Address: {address}\n')
             if country is None:
                 await bot.send_message(message.from_user.id,
@@ -72,7 +75,9 @@ class UserMain:
                 async with state.proxy() as data:
                     data["country"] = country
                     data["state"] = state_
+                    data["province"] = province
                     data["city"] = city
+                    data["town"] = town
                     data["address"] = address
                     data["latitude"] = latitude
                     data["longitude"] = longitude
@@ -92,7 +97,9 @@ class UserMain:
             user_set_db_obj.user_set_geo(callback.from_user.id,
                                          data.get("country"),
                                          data.get("state"),
+                                         data.get("province"),
                                          data.get("city"),
+                                         data.get("town"),
                                          data.get("address"),
                                          data.get("latitude"),
                                          data.get("longitude"),
@@ -108,6 +115,7 @@ class UserMain:
         if "My profile" in message.text:
             UserProfile.register_user_profile(dp)
             res = user_get_db_obj.user_exists(message.from_user.id)
+            print(res)
             await states.UserProfile.my_profile.set()
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
@@ -121,11 +129,15 @@ class UserMain:
                                    f"{config.KEYBOARD.get('INFORMATION')} "
                                    f"Your State: <b>{res[7]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your City: <b>{res[8]}</b>\n"
+                                   f"Your Province: <b>{res[8]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Your Address: <b>{res[9]}</b>\n"
+                                   f"Your City: <b>{res[9]}</b>\n"
                                    f"{config.KEYBOARD.get('INFORMATION')} "
-                                   f"Last Update: <b>{res[12]}</b>\n"
+                                   f"Your Town: <b>{res[10]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Your Address: <b>{res[11]}</b>\n"
+                                   f"{config.KEYBOARD.get('INFORMATION')} "
+                                   f"Last Update: <b>{res[14]}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         if "Locations" in message.text:
@@ -211,6 +223,7 @@ class UserProfile:
                 address = f'{location.raw.get("address").get("road")} - {location.raw.get("address").get("house_number")}'
                 latitude = location.raw.get("lat")
                 longitude = location.raw.get("lon")
+                # print(location.raw)
                 if city is None:
                     city = location.raw.get("address").get("town")
                 await bot.send_message(message.from_user.id,
@@ -259,6 +272,7 @@ class UserProfile:
                                    "Update completed!",
                                    reply_markup=markup_users.main_menu(),
                                    )
+
 
     @staticmethod
     async def update_about_me(message: types.Message):
