@@ -15,21 +15,24 @@ def send_my_geo():
 
 def start():
     inline_start = InlineKeyboardMarkup()
-    start_1 = InlineKeyboardButton(text='Enter bot', callback_data='enter_bot')
+    start_1 = InlineKeyboardButton(text=f'{config.KEYBOARD.get("RIGHT_ARROW")} Enter bot {config.KEYBOARD.get("LEFT_ARROW")}',
+                                   callback_data='enter_bot')
     inline_start.insert(start_1)
     return inline_start
 
 
 def start_menu():
     inline_start = InlineKeyboardMarkup()
-    start_1 = InlineKeyboardButton(text='Enter Main Menu', callback_data='enter_menu')
+    start_1 = InlineKeyboardButton(text=f'{config.KEYBOARD.get("RIGHT_ARROW")} Enter Main Menu {config.KEYBOARD.get("LEFT_ARROW")}',
+                                   callback_data='enter_menu')
     inline_start.insert(start_1)
     return inline_start
 
 
 def update_location():
     inline_update = InlineKeyboardMarkup()
-    start_1 = InlineKeyboardButton(text='Update My Location', callback_data='update_location')
+    start_1 = InlineKeyboardButton(text=f'{config.KEYBOARD.get("UP!_BUTTON")} Update My Location {config.KEYBOARD.get("UP!_BUTTON")}',
+                                   callback_data='update_location')
     inline_update.insert(start_1)
     return inline_update
 

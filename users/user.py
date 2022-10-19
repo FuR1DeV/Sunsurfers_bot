@@ -240,7 +240,7 @@ class UserProfile:
                     await bot.send_message(message.from_user.id,
                                            "Please check the coordinates, if you made a mistake, "
                                            "you can send the geolocation again. If everything is ok, "
-                                           "click Enter Main Menu",
+                                           "click <b>Update My Location</b>",
                                            reply_markup=markup_start.update_location())
                     async with state.proxy() as data:
                         data["country"] = country
@@ -276,7 +276,6 @@ class UserProfile:
                                    "Update completed!",
                                    reply_markup=markup_users.main_menu(),
                                    )
-
 
     @staticmethod
     async def update_about_me(message: types.Message):

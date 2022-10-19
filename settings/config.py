@@ -53,6 +53,9 @@ KEYBOARD = {
     'INPUT_LATIN_LETTERS': emojize(':input_latin_letters:'),
     'WORLD_MAP': emojize(':world_map:'),
     'SUN': emojize(':sun:'),
+    'RIGHT_ARROW': emojize(':right_arrow:'),
+    'LEFT_ARROW': emojize(':left_arrow:'),
+    'UP!_BUTTON': emojize(':UP!_button:'),
     'RIGHT_ARROW_CURVING_LEFT': emojize(':right_arrow_curving_left:'),
 }
 
