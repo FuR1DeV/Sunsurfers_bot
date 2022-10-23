@@ -144,7 +144,7 @@ class UserMain:
             state_, province, city, town, address = res[7], res[8], res[9], res[10], res[11]
             sungatherings = []
             for k, v in countries.items():
-                if user_get_db_obj.user_get_info_country(351490585, v):
+                if user_get_db_obj.user_get_info_country(res[1], v):
                     sungatherings.append(v)
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
@@ -453,6 +453,17 @@ class EnterCountry:
 
     @staticmethod
     async def user(callback: types.CallbackQuery, state: FSMContext):
+        countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
+                     f"{config.COUNTRIES.get('India')}": "India",
+                     f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
+                     f"{config.COUNTRIES.get('Philippines')}": "Philippines",
+                     f"{config.COUNTRIES.get('Georgia')}": "Georgia",
+                     f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
+                     f"{config.COUNTRIES.get('Nepal')}": "Nepal",
+                     f"{config.COUNTRIES.get('Morocco')}": "Morocco",
+                     f"{config.COUNTRIES.get('Turkey')}": "Turkey",
+                     f"{config.COUNTRIES.get('Mexico')}": "Mexico",
+                     f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         user = callback.data[5:]
         await bot.send_message(callback.from_user.id,
@@ -461,26 +472,26 @@ class EnterCountry:
         async with state.proxy() as data:
             res = user_get_db_obj.user_get_info_username(callback.from_user.id, user)
             data["user"] = res
+        sungatherings = []
+        for k, v in countries.items():
+            if user_get_db_obj.user_get_info_country(res[1], v):
+                sungatherings.append(v)
         await bot.send_message(callback.from_user.id,
                                f"{config.KEYBOARD.get('DASH') * 14}\n"
+                               f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                               f"Name: <b>{res[3]} {res[4]}</b>\n"
                                f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-                               f"Username: <b>@{res[2]}</b>\n"
-                               f"{config.KEYBOARD.get('INFORMATION')} "
-                               f"First Name: <b>{res[3]}</b>\n"
-                               f"{config.KEYBOARD.get('INFORMATION')} "
-                               f"Last Name: <b>{res[4]}</b>\n"
-                               f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"Country: <b>{res[6]}</b>\n"
-                               f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"State: <b>{res[7]}</b>\n"
-                               f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"Province: <b>{res[8]}</b>\n"
-                               f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"City: <b>{res[9]}</b>\n"
-                               f"{config.KEYBOARD.get('WORLD_MAP')} "
+                               f"Nickname: <b>@{res[2]}</b>\n"
+                               f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                               f"Country: <b>{res[6]}</b> | State: <b>{res[7]}</b>\n"
+                               f"{config.KEYBOARD.get('CITYSCAPE')} "
+                               f"Province: <b>{res[8]}</b> | City: <b>{res[9]}</b>\n"
+                               f"{config.KEYBOARD.get('TENT')} "
                                f"Town: <b>{res[10]}</b>\n"
-                               f"{config.KEYBOARD.get('WORLD_MAP')} "
-                               f"Update Location: <b>{res[14]}</b>\n"
+                               f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                               f"Last Update: <b>{res[14].strftime('%d %B, %Y')}</b>\n"
+                               f"{config.KEYBOARD.get('SUN')} "
+                               f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                f"{config.KEYBOARD.get('DASH') * 14}",
                                reply_markup=markup_users.user_choose())
         await states.Information.user_info.set()
