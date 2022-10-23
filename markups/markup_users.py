@@ -23,10 +23,19 @@ def main_menu():
 
 def user_profile():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('UP!_BUTTON')} Update Information",
+                 f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} About me")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
+    return keyboard
+
+
+def user_profile_update_info():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('WORLD_MAP')} Update Location",
                  f"{config.KEYBOARD.get('CLIPBOARD')} Update About me")
-    keyboard.row(f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} About me")
-    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
+    keyboard.row(f"{config.KEYBOARD.get('INFORMATION')} Update First Name",
+                 f"{config.KEYBOARD.get('INFORMATION')} Update Last Name")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back")
     return keyboard
 
 

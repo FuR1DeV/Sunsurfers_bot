@@ -148,19 +148,19 @@ class UserMain:
                     sungatherings.append(v)
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
-                                   f"Your Profile:\n"
-                                   f"{config.KEYBOARD.get('ID_BUTTON')} "
-                                   f"Your ID: <b>{message.from_user.id}</b>\n"
+                                   f"<em>Your Profile:</em>\n"
+                                   f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                                   f"Your Name: <b>{res[3]} {res[4]}</b>\n"
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-                                   f"Your nickname: <b>@{message.from_user.username}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
+                                   f"Your Nickname: <b>@{message.from_user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
                                    f"Country: <b>{res[6]}</b> | State: <b>{state_}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
+                                   f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{province}</b> | City: <b>{city}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
+                                   f"{config.KEYBOARD.get('TENT')} "
                                    f"Town: <b>{town}</b> | Address: <b>{address}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Last Update: <b>{res[14]}</b>\n"
+                                   f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                                   f"Last Update: <b>{res[14].strftime('%d/%m/%Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -209,6 +209,11 @@ class UserProfile:
             await bot.send_message(message.from_user.id,
                                    "You have returned to the main menu",
                                    reply_markup=markup_users.main_menu())
+        if message.text == f"{config.KEYBOARD.get('UP!_BUTTON')} Update Information":
+            await states.UserProfile.update_info.set()
+            await bot.send_message(message.from_user.id,
+                                   "Here you can update your information",
+                                   reply_markup=markup_users.user_profile_update_info())
         if message.text == f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} About me":
             res = user_get_db_obj.user_about(message.from_user.id)[0]
             await bot.send_message(message.from_user.id,
@@ -217,6 +222,9 @@ class UserProfile:
                                    f"<b>{res}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
+
+    @staticmethod
+    async def update_information(message: types.Message):
         if "Update Location" in message.text:
             await bot.send_message(message.from_user.id,
                                    f"{message.from_user.first_name} Update your location",
@@ -227,16 +235,67 @@ class UserProfile:
                                    "<b>Here you can edit your information</b>\n"
                                    "<b>Enter any information about yourself and send me a message</b>",
                                    reply_markup=markup_users.back())
-            await states.UserProfile.about_me.set()
+            await states.UserProfile.update_about_me.set()
+        if message.text == f"{config.KEYBOARD.get('INFORMATION')} Update First Name":
+            await bot.send_message(message.from_user.id,
+                                   "<b>Here you can edit your First Name</b>\n"
+                                   "<b>Enter First Name and send me a message</b>",
+                                   reply_markup=markup_users.back())
+            await states.UserProfile.update_first_name.set()
+        if message.text == f"{config.KEYBOARD.get('INFORMATION')} Update Last Name":
+            await bot.send_message(message.from_user.id,
+                                   "<b>Here you can edit your Last Name</b>\n"
+                                   "<b>Enter Last Name and send me a message</b>",
+                                   reply_markup=markup_users.back())
+            await states.UserProfile.update_last_name.set()
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
+                         f"{config.COUNTRIES.get('India')}": "India",
+                         f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
+                         f"{config.COUNTRIES.get('Philippines')}": "Philippines",
+                         f"{config.COUNTRIES.get('Georgia')}": "Georgia",
+                         f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
+                         f"{config.COUNTRIES.get('Nepal')}": "Nepal",
+                         f"{config.COUNTRIES.get('Morocco')}": "Morocco",
+                         f"{config.COUNTRIES.get('Turkey')}": "Turkey",
+                         f"{config.COUNTRIES.get('Mexico')}": "Mexico",
+                         f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
+            UserProfile.register_user_profile(dp)
+            res = user_get_db_obj.user_exists(message.from_user.id)
+            await states.UserProfile.my_profile.set()
+            state_, province, city, town, address = res[7], res[8], res[9], res[10], res[11]
+            sungatherings = []
+            for k, v in countries.items():
+                if user_get_db_obj.user_get_info_country(351490585, v):
+                    sungatherings.append(v)
+            await bot.send_message(message.from_user.id,
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<em>Your Profile:</em>\n"
+                                   f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                                   f"Your Name: <b>{res[3]} {res[4]}</b>\n"
+                                   f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                                   f"Your Nickname: <b>@{message.from_user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                                   f"Country: <b>{res[6]}</b> | State: <b>{state_}</b>\n"
+                                   f"{config.KEYBOARD.get('CITYSCAPE')} "
+                                   f"Province: <b>{province}</b> | City: <b>{city}</b>\n"
+                                   f"{config.KEYBOARD.get('TENT')} "
+                                   f"Town: <b>{town}</b> | Address: <b>{address}</b>\n"
+                                   f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                                   f"Last Update: <b>{res[14].strftime('%d/%m/%Y')}</b>\n"
+                                   f"{config.KEYBOARD.get('SUN')} "
+                                   f"SunGatherings: <b>{', '.join(sungatherings)}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
 
     @staticmethod
     async def update_location(message: types.Message, state: FSMContext):
         try:
             if "Back" in message.text:
                 await bot.send_message(message.from_user.id,
-                                       "You came back",
-                                       reply_markup=markup_users.user_profile())
-                await states.UserProfile.my_profile.set()
+                                       "<b>You are back in Update Information</b>",
+                                       reply_markup=markup_users.user_profile_update_info())
+                await states.UserProfile.update_info.set()
         except:
             try:
                 n = Nominatim(user_agent='User')
@@ -327,20 +386,54 @@ class UserProfile:
             await states.UserProfile.my_profile.set()
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
-                                   "<b>You are back in My Profile</b>",
+                                   "<b>You are back in Update Information</b>",
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
+
+    @staticmethod
+    async def update_first_name(message: types.Message):
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            user_set_db_obj.user_set_first_name(message.from_user.id, message.text)
+            await bot.send_message(message.from_user.id,
+                                   "<b>Successfully!</b>",
                                    reply_markup=markup_users.user_profile())
             await states.UserProfile.my_profile.set()
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await bot.send_message(message.from_user.id,
+                                   "<b>You are back in Update Information</b>",
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
+
+    @staticmethod
+    async def update_last_name(message: types.Message):
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            user_set_db_obj.user_set_last_name(message.from_user.id, message.text)
+            await bot.send_message(message.from_user.id,
+                                   "<b>Successfully!</b>",
+                                   reply_markup=markup_users.user_profile())
+            await states.UserProfile.my_profile.set()
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await bot.send_message(message.from_user.id,
+                                   "<b>You are back in Update Information</b>",
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
 
     @staticmethod
     def register_user_profile(dp):
         dp.register_message_handler(UserProfile.user_profile,
                                     state=states.UserProfile.my_profile)
+        dp.register_message_handler(UserProfile.update_information,
+                                    state=states.UserProfile.update_info)
         dp.register_message_handler(UserProfile.update_location, content_types=['location', 'text'],
                                     state=states.UserProfile.update_location)
         dp.register_callback_query_handler(UserProfile.update_location_menu,
                                            state=states.UserProfile.update_location)
         dp.register_message_handler(UserProfile.update_about_me,
-                                    state=states.UserProfile.about_me)
+                                    state=states.UserProfile.update_about_me)
+        dp.register_message_handler(UserProfile.update_first_name,
+                                    state=states.UserProfile.update_first_name)
+        dp.register_message_handler(UserProfile.update_last_name,
+                                    state=states.UserProfile.update_last_name)
 
 
 class EnterCountry:

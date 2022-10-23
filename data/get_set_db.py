@@ -168,6 +168,30 @@ class UserSetDB(Database):
             )
             self.connection.commit()
 
+    def user_set_first_name(self, user_id, first_name):
+        self.logger.info(f'The user updates his geo data')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "UPDATE users SET first_name = %(first_name)s "
+                "WHERE user_id = %(user_id)s;", {
+                    'user_id': user_id,
+                    'first_name': first_name,
+                }
+            )
+            self.connection.commit()
+
+    def user_set_last_name(self, user_id, last_name):
+        self.logger.info(f'The user updates his geo data')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "UPDATE users SET last_name = %(last_name)s "
+                "WHERE user_id = %(user_id)s;", {
+                    'user_id': user_id,
+                    'last_name': last_name,
+                }
+            )
+            self.connection.commit()
+
 
 global_get_db_obj = GlobalGetDB()
 user_get_db_obj = UserGetDB()
