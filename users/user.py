@@ -266,7 +266,7 @@ class UserProfile:
             state_, province, city, town, address = res[7], res[8], res[9], res[10], res[11]
             sungatherings = []
             for k, v in countries.items():
-                if user_get_db_obj.user_get_info_country(351490585, v):
+                if user_get_db_obj.user_get_info_country(res[1], v):
                     sungatherings.append(v)
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
@@ -284,7 +284,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{res[14].strftime('%d %B, %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
-                                   f"SunGatherings: <b>{', '.join(sungatherings)}</b>\n"
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
 
