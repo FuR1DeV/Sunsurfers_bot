@@ -282,7 +282,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"Town: <b>{town}</b> | Address: <b>{address}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{res[14].strftime('%d/%m/%Y')}</b>\n"
+                                   f"Last Update: <b>{res[14].strftime('%d %B, %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
