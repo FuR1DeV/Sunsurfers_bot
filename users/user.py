@@ -150,9 +150,9 @@ class UserMain:
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
                                    f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
-                                   f"Your Name: <b>{res[3]} {res[4]}</b>\n"
+                                   f"Name: <b>{res[3]} {res[4]}</b>\n"
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-                                   f"Your Nickname: <b>@{message.from_user.username}</b>\n"
+                                   f"Nickname: <b>@{message.from_user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
                                    f"Country: <b>{res[6]}</b> | State: <b>{state_}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
@@ -160,9 +160,9 @@ class UserMain:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"Town: <b>{town}</b> | Address: <b>{address}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{res[14].strftime('%d/%m/%Y')}</b>\n"
+                                   f"Last Update: <b>{res[14].strftime('%d %B, %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
-                                   f"SunGatherings: <b>{', '.join(sungatherings)}</b>\n"
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         if "Locations" in message.text:
@@ -370,11 +370,10 @@ class UserProfile:
                                          data.get("latitude"),
                                          data.get("longitude"),
                                          data.get("time_location"))
-            await states.UserStart.user_menu.set()
             await bot.send_message(callback.from_user.id,
                                    "Update completed!",
-                                   reply_markup=markup_users.main_menu(),
-                                   )
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
 
     @staticmethod
     async def update_about_me(message: types.Message):
@@ -382,8 +381,8 @@ class UserProfile:
             user_set_db_obj.user_set_about_me(message.from_user.id, message.text)
             await bot.send_message(message.from_user.id,
                                    "<b>Successfully!</b>",
-                                   reply_markup=markup_users.user_profile())
-            await states.UserProfile.my_profile.set()
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
                                    "<b>You are back in Update Information</b>",
@@ -396,8 +395,8 @@ class UserProfile:
             user_set_db_obj.user_set_first_name(message.from_user.id, message.text)
             await bot.send_message(message.from_user.id,
                                    "<b>Successfully!</b>",
-                                   reply_markup=markup_users.user_profile())
-            await states.UserProfile.my_profile.set()
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
                                    "<b>You are back in Update Information</b>",
@@ -410,8 +409,8 @@ class UserProfile:
             user_set_db_obj.user_set_last_name(message.from_user.id, message.text)
             await bot.send_message(message.from_user.id,
                                    "<b>Successfully!</b>",
-                                   reply_markup=markup_users.user_profile())
-            await states.UserProfile.my_profile.set()
+                                   reply_markup=markup_users.user_profile_update_info())
+            await states.UserProfile.update_info.set()
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
                                    "<b>You are back in Update Information</b>",
