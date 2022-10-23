@@ -50,8 +50,20 @@ class GlobalGetDB(Database):
         with self.connection.cursor() as cursor:
             cursor.execute(
                 f"SELECT username, first_name, last_name FROM users "
-                f"WHERE user_id = %(user_id)s;;", {
+                f"WHERE user_id = %(user_id)s;", {
                     'user_id': user_id
+                }
+            )
+            return cursor.fetchone()
+
+    def check_user_about_sun_gathering(self, user_id, country):
+        self.logger.info(f'The function checks user about at this gathering')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT about_sun_gathering FROM sun_gathering_{country} "
+                f"WHERE user_id = %(user_id)s;", {
+                    'country': country,
+                    'user_id': user_id,
                 }
             )
             return cursor.fetchone()

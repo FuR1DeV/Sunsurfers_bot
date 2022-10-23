@@ -508,25 +508,25 @@ class EnterCountry:
                                    f"<b>{about}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}")
         if f"{config.KEYBOARD.get('SUN')} Words about SunGatherings" in message.text:
-            countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
-                         f"{config.COUNTRIES.get('India')}": "India",
-                         f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
-                         f"{config.COUNTRIES.get('Philippines')}": "Philippines",
-                         f"{config.COUNTRIES.get('Georgia')}": "Georgia",
-                         f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
-                         f"{config.COUNTRIES.get('Nepal')}": "Nepal",
-                         f"{config.COUNTRIES.get('Morocco')}": "Morocco",
-                         f"{config.COUNTRIES.get('Turkey')}": "Turkey",
-                         f"{config.COUNTRIES.get('Mexico')}": "Mexico",
-                         f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
+            countries = {"Thailand": f"1.0 {config.COUNTRIES.get('Thailand')}",
+                         "India": f"2.0 {config.COUNTRIES.get('India')}",
+                         "Vietnam": f"3.0 {config.COUNTRIES.get('Vietnam')}",
+                         "Philippines": f"4.0 {config.COUNTRIES.get('Philippines')}",
+                         "Georgia": f"5.0 {config.COUNTRIES.get('Georgia')}",
+                         "Indonesia": f"6.0 {config.COUNTRIES.get('Indonesia')}",
+                         "Nepal": f"7.0 {config.COUNTRIES.get('Nepal')}",
+                         "Morocco": f"8.0 {config.COUNTRIES.get('Morocco')}",
+                         "Turkey": f"9.0 {config.COUNTRIES.get('Turkey')}",
+                         "Mexico": f"10.0 {config.COUNTRIES.get('Mexico')}",
+                         "SriLanka": f"11.0 {config.COUNTRIES.get('SriLanka')}"}
             sungatherings = []
             for k, v in countries.items():
-                if user_get_db_obj.user_get_info_country(user_res[1], v):
-                    sungatherings.append(v)
+                if user_get_db_obj.user_get_info_country(user_res[1], k):
+                    sungatherings.append(k)
             inline_gathering = InlineKeyboardMarkup()
             for i in sungatherings:
-                inline_gathering.insert(InlineKeyboardButton(text=f'{i}',
-                                                             callback_data=f'sun_gathering_{i}'))
+                inline_gathering.insert(InlineKeyboardButton(text=f'{countries.get(i)} {i}',
+                                                             callback_data=f'us_sun_a_{i}'))
             await bot.send_message(message.from_user.id,
                                    f"Choose the SunGathering",
                                    reply_markup=inline_gathering)
@@ -535,6 +535,18 @@ class EnterCountry:
                                    f"{message.from_user.first_name} You are in the main menu",
                                    reply_markup=markup_users.main_menu())
             await states.UserStart.user_menu.set()
+
+    @staticmethod
+    async def user_info_about_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        country = callback.data[9::]
+        async with state.proxy() as data:
+            user_res = data.get("user")
+            about = global_get_db_obj.check_user_about_sun_gathering(user_res[1], country)[0]
+        await bot.send_message(callback.from_user.id,
+                               f"Words about SunGathering in <b>{country}</b>\n"
+                               f"<b>{about}</b>",
+                               reply_markup=markup_users.user_choose())
 
     @staticmethod
     def register_enter_country(dp):
@@ -546,7 +558,9 @@ class EnterCountry:
                                            text_contains='user_')
         dp.register_message_handler(EnterCountry.user_info,
                                     state=states.Information.user_info)
-
+        dp.register_callback_query_handler(EnterCountry.user_info_about_sun_gathering,
+                                           state=states.Information.user_info,
+                                           text_contains='us_sun_a_')
 
 class SunGathering:
     @staticmethod
