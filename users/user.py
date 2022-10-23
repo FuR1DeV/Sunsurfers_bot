@@ -498,15 +498,38 @@ class EnterCountry:
 
     @staticmethod
     async def user_info(message: types.Message, state: FSMContext):
+        async with state.proxy() as data:
+            user_res = data.get("user")
         if "About him/her" in message.text:
-            async with state.proxy() as data:
-                user_res = data.get("user")
             about = user_get_db_obj.user_about(user_res[1])[0]
             await bot.send_message(message.from_user.id,
                                    f"Information about this person\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<b>{about}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}")
+        if f"{config.KEYBOARD.get('SUN')} Words about SunGatherings" in message.text:
+            countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
+                         f"{config.COUNTRIES.get('India')}": "India",
+                         f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
+                         f"{config.COUNTRIES.get('Philippines')}": "Philippines",
+                         f"{config.COUNTRIES.get('Georgia')}": "Georgia",
+                         f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
+                         f"{config.COUNTRIES.get('Nepal')}": "Nepal",
+                         f"{config.COUNTRIES.get('Morocco')}": "Morocco",
+                         f"{config.COUNTRIES.get('Turkey')}": "Turkey",
+                         f"{config.COUNTRIES.get('Mexico')}": "Mexico",
+                         f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
+            sungatherings = []
+            for k, v in countries.items():
+                if user_get_db_obj.user_get_info_country(user_res[1], v):
+                    sungatherings.append(v)
+            inline_gathering = InlineKeyboardMarkup()
+            for i in sungatherings:
+                inline_gathering.insert(InlineKeyboardButton(text=f'{i}',
+                                                             callback_data=f'sun_gathering_{i}'))
+            await bot.send_message(message.from_user.id,
+                                   f"Choose the SunGathering",
+                                   reply_markup=inline_gathering)
         if "Main menu" in message.text:
             await bot.send_message(message.from_user.id,
                                    f"{message.from_user.first_name} You are in the main menu",
