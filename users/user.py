@@ -465,14 +465,16 @@ class SunGathering:
         await states.Sun.country_menu.set()
         user_exist = user_get_db_obj.user_get_info_country(callback.from_user.id, res)
         await bot.send_message(callback.from_user.id,
-                               f"Супер! Вы выбрали {res}",
+                               f"Super! You choosed {res}",
                                reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
     @staticmethod
     async def select_sun_gathering_menu(message: types.Message, state: FSMContext):
         if message.text == f"{config.KEYBOARD.get('SUNRISE')} About SunGathering":
+            async with state.proxy() as data:
+                res = data.get("sun_gathering_country")
             await bot.send_message(message.from_user.id,
-                                   "Here will be shown information about the SunGathering")
+                                   f"Here will be shown information about the SunGathering in {res}")
         if message.text == f"{config.KEYBOARD.get('WAVING_HAND')} I was there!":
             await bot.send_message(message.from_user.id,
                                    "If you were at this SunGathering, "
@@ -481,11 +483,16 @@ class SunGathering:
         if message.text == f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering":
             async with state.proxy() as data:
                 country = data.get("sun_gathering_country")
-            res = global_get_db_obj.check_user_sun_gathering(message.from_user.id, country)
-            if res is None:
+            res = global_get_db_obj.check_user_sun_gathering(message.from_user.id,
+                                                             country)
+            if res[5]:
                 await bot.send_message(message.from_user.id,
-                                       "You weren't at this SunGathering!")
-            if res:
+                                       "Describe your memories\n"
+                                       "Now your memories are:\n"
+                                       f"<b>{res[5]}</b>",
+                                       reply_markup=markup_users.about_sun_gathering())
+                await states.Sun.about.set()
+            else:
                 await bot.send_message(message.from_user.id,
                                        "Describe your memories",
                                        reply_markup=markup_users.about_sun_gathering())
@@ -524,20 +531,24 @@ class SunGathering:
 
     @staticmethod
     async def about_sun_gathering(message: types.Message, state: FSMContext):
-        if message.text == f"{config.KEYBOARD.get('CROSS_MARK')} Cancel":
+        async with state.proxy() as data:
+            res = data.get("sun_gathering_country")
+        user_exist = user_get_db_obj.user_get_info_country(message.from_user.id, res)
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await states.Sun.country_menu.set()
             await bot.send_message(message.from_user.id,
-                                   "You cancelled",
-                                   reply_markup=markup_users.sun_gathering_menu())
-            await states.Sun.sun_menu.set()
-        if message.text != f"{config.KEYBOARD.get('CROSS_MARK')} Cancel":
+                                   f"You are in {res}",
+                                   reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             async with state.proxy() as data:
                 user_set_db_obj.user_set_sun_gathering_about(message.from_user.id,
                                                              data.get("sun_gathering_country"),
                                                              message.text)
+            await states.Sun.country_menu.set()
             await bot.send_message(message.from_user.id,
-                                   "Success!",
-                                   reply_markup=markup_users.sun_gathering_menu())
-            await states.Sun.sun_menu.set()
+                                   f"Success! Your data has been updated!\n"
+                                   f"You are in {res}",
+                                   reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
     @staticmethod
     def register_sun_gathering(dp):

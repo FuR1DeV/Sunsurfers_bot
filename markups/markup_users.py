@@ -62,10 +62,12 @@ def sun_gathering_menu():
 
 def sun_gathering_menu_select_country(user_exists):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
-                 f"{config.KEYBOARD.get('WAVING_HAND')} I was there!")
     if user_exists:
-        keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering")
+        keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
+                     f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering")
+    else:
+        keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
+                     f"{config.KEYBOARD.get('WAVING_HAND')} I was there!")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 
@@ -79,7 +81,7 @@ def user_choose():
 
 def about_sun_gathering():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('CROSS_MARK')} Cancel")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back")
     return keyboard
 
 
