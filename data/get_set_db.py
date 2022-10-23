@@ -35,6 +35,27 @@ class GlobalGetDB(Database):
             )
             return cursor.fetchone()
 
+    def check_users_in_sun_gathering(self, country):
+        self.logger.info(f'The function checks all person at this gathering')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT * FROM sun_gathering_{country};", {
+                    'country': country
+                }
+            )
+            return cursor.fetchall()
+
+    def load_username_first_last_name(self, user_id):
+        self.logger.info(f'The function load username first last name')
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT username, first_name, last_name FROM users "
+                f"WHERE user_id = %(user_id)s;;", {
+                    'user_id': user_id
+                }
+            )
+            return cursor.fetchone()
+
 
 class UserGetDB(Database):
     logger = logging.getLogger("bot.data.user_get_db")
@@ -141,16 +162,13 @@ class UserSetDB(Database):
             )
             self.connection.commit()
 
-    def user_set_sun_gathering(self, user_id, username, first_name, last_name, sun_gathering):
+    def user_set_sun_gathering(self, user_id, sun_gathering):
         self.logger.info(f'The user set sun gathering')
         with self.connection.cursor() as cursor:
             cursor.execute(
-                f"INSERT INTO sun_gathering_{sun_gathering} (user_id, username, first_name, last_name) "
-                "VALUES (%(user_id)s, %(username)s, %(first_name)s, %(last_name)s);", {
+                f"INSERT INTO sun_gathering_{sun_gathering} (user_id) "
+                "VALUES (%(user_id)s);", {
                     'user_id': user_id,
-                    'username': username,
-                    'first_name': first_name,
-                    'last_name': last_name,
                     'sun_gathering': sun_gathering,
                 }
             )

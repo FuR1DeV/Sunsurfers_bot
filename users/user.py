@@ -584,9 +584,9 @@ class SunGathering:
 
     @staticmethod
     async def select_sun_gathering_menu(message: types.Message, state: FSMContext):
+        async with state.proxy() as data:
+            res = data.get("sun_gathering_country")
         if message.text == f"{config.KEYBOARD.get('SUNRISE')} About SunGathering":
-            async with state.proxy() as data:
-                res = data.get("sun_gathering_country")
             await bot.send_message(message.from_user.id,
                                    f"Here will be shown information about the SunGathering in {res}")
         if message.text == f"{config.KEYBOARD.get('WAVING_HAND')} I was there!":
@@ -599,11 +599,11 @@ class SunGathering:
                 country = data.get("sun_gathering_country")
             res = global_get_db_obj.check_user_sun_gathering(message.from_user.id,
                                                              country)
-            if res[5]:
+            if res[2]:
                 await bot.send_message(message.from_user.id,
                                        "Describe your memories\n"
                                        "Now your memories are:\n"
-                                       f"<b>{res[5]}</b>",
+                                       f"<b>{res[2]}</b>",
                                        reply_markup=markup_users.about_sun_gathering())
                 await states.Sun.about.set()
             else:
@@ -611,6 +611,19 @@ class SunGathering:
                                        "Describe your memories",
                                        reply_markup=markup_users.about_sun_gathering())
                 await states.Sun.about.set()
+        if message.text == f"{config.KEYBOARD.get('EX_QUEST_MARK')} Who was there?":
+            all_users = global_get_db_obj.check_users_in_sun_gathering(res)
+            if all_users:
+                await bot.send_message(message.from_user.id,
+                                       "Here's who was on the SunGathering")
+                v = 1
+                for i in all_users:
+                    await bot.send_message(message.from_user.id,
+                                           f"{v}. @{' | '.join(global_get_db_obj.load_username_first_last_name(i[1]))}")
+                    v += 1
+            else:
+                await bot.send_message(message.from_user.id,
+                                       "No one yet =(")
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
             await states.Sun.sun_menu.set()
             await bot.send_message(message.from_user.id,
@@ -630,15 +643,11 @@ class SunGathering:
         if res is None:
             async with state.proxy() as data:
                 user_set_db_obj.user_set_sun_gathering(callback.from_user.id,
-                                                       callback.from_user.username,
-                                                       callback.from_user.first_name,
-                                                       callback.from_user.last_name,
                                                        data.get("sun_gathering_country").lower())
             await bot.send_message(callback.from_user.id,
                                    f"Great you were at this event! <b>SunGathering - "
                                    f"{data.get('sun_gathering_country')}</b>\n",
-                                   reply_markup=markup_users.sun_gathering_menu())
-            await states.Sun.sun_menu.set()
+                                   reply_markup=markup_users.sun_gathering_menu_select_country(True))
         if res:
             await bot.send_message(callback.from_user.id,
                                    "You are already there")

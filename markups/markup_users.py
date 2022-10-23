@@ -74,9 +74,11 @@ def sun_gathering_menu_select_country(user_exists):
     if user_exists:
         keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
                      f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering")
+        keyboard.row(f"{config.KEYBOARD.get('EX_QUEST_MARK')} Who was there?")
     else:
         keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
                      f"{config.KEYBOARD.get('WAVING_HAND')} I was there!")
+        keyboard.row(f"{config.KEYBOARD.get('EX_QUEST_MARK')} Who was there?")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 
