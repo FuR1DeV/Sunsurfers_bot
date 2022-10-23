@@ -60,11 +60,12 @@ def sun_gathering_menu():
     return keyboard
 
 
-def sun_gathering_menu_select_country():
+def sun_gathering_menu_select_country(user_exists):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('SUNRISE')} About SunGathering",
                  f"{config.KEYBOARD.get('WAVING_HAND')} I was there!")
-    keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering")
+    if user_exists:
+        keyboard.row(f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 

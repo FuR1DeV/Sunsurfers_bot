@@ -463,9 +463,10 @@ class SunGathering:
         async with state.proxy() as data:
             data["sun_gathering_country"] = res
         await states.Sun.country_menu.set()
+        user_exist = user_get_db_obj.user_get_info_country(callback.from_user.id, res)
         await bot.send_message(callback.from_user.id,
                                f"Супер! Вы выбрали {res}",
-                               reply_markup=markup_users.sun_gathering_menu_select_country())
+                               reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
     @staticmethod
     async def select_sun_gathering_menu(message: types.Message, state: FSMContext):
