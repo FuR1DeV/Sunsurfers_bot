@@ -127,10 +127,25 @@ class UserMain:
     async def user_menu(message: types.Message, state: FSMContext):
         await state.finish()
         if "My profile" in message.text:
+            countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
+                         f"{config.COUNTRIES.get('India')}": "India",
+                         f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
+                         f"{config.COUNTRIES.get('Philippines')}": "Philippines",
+                         f"{config.COUNTRIES.get('Georgia')}": "Georgia",
+                         f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
+                         f"{config.COUNTRIES.get('Nepal')}": "Nepal",
+                         f"{config.COUNTRIES.get('Morocco')}": "Morocco",
+                         f"{config.COUNTRIES.get('Turkey')}": "Turkey",
+                         f"{config.COUNTRIES.get('Mexico')}": "Mexico",
+                         f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
             UserProfile.register_user_profile(dp)
             res = user_get_db_obj.user_exists(message.from_user.id)
             await states.UserProfile.my_profile.set()
             state_, province, city, town, address = res[7], res[8], res[9], res[10], res[11]
+            sungatherings = []
+            for k, v in countries.items():
+                if user_get_db_obj.user_get_info_country(351490585, v):
+                    sungatherings.append(v)
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"Your Profile:\n"
@@ -139,19 +154,15 @@ class UserMain:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Your nickname: <b>@{message.from_user.username}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Country: <b>{res[6]}</b>\n"
+                                   f"Country: <b>{res[6]}</b> | State: <b>{state_}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your State: <b>{state_}</b>\n"
+                                   f"Province: <b>{province}</b> | City: <b>{city}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Province: <b>{province}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your City: <b>{city}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Town: <b>{town}</b>\n"
-                                   f"{config.KEYBOARD.get('WORLD_MAP')} "
-                                   f"Your Address: <b>{address}</b>\n"
+                                   f"Town: <b>{town}</b> | Address: <b>{address}</b>\n"
                                    f"{config.KEYBOARD.get('WORLD_MAP')} "
                                    f"Last Update: <b>{res[14]}</b>\n"
+                                   f"{config.KEYBOARD.get('SUN')} "
+                                   f"SunGatherings: <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         if "Locations" in message.text:
@@ -420,17 +431,17 @@ class SunGathering:
                                    "You have returned to the main menu",
                                    reply_markup=markup_users.main_menu())
         if "Choose SunGathering" in message.text:
-            countries = [f"{config.COUNTRIES.get('THAILAND')} Thailand",
-                         f"{config.COUNTRIES.get('INDIA')} India",
-                         f"{config.COUNTRIES.get('VIETNAM')} Vietnam",
-                         f"{config.COUNTRIES.get('PHILIPPINES')} Philippines",
-                         f"{config.COUNTRIES.get('GEORGIA')} Georgia",
-                         f"{config.COUNTRIES.get('INDONESIA')} Indonesia",
-                         f"{config.COUNTRIES.get('NEPAL')} Nepal",
-                         f"{config.COUNTRIES.get('MOROCCO')} Morocco",
-                         f"{config.COUNTRIES.get('TURKEY')} Turkey",
-                         f"{config.COUNTRIES.get('MEXICO')} Mexico",
-                         f"{config.COUNTRIES.get('SRI-LANKA')} SriLanka"]
+            countries = [f"{config.COUNTRIES.get('Thailand')} Thailand",
+                         f"{config.COUNTRIES.get('India')} India",
+                         f"{config.COUNTRIES.get('Vietnam')} Vietnam",
+                         f"{config.COUNTRIES.get('Philippines')} Philippines",
+                         f"{config.COUNTRIES.get('Georgia')} Georgia",
+                         f"{config.COUNTRIES.get('Indonesia')} Indonesia",
+                         f"{config.COUNTRIES.get('Nepal')} Nepal",
+                         f"{config.COUNTRIES.get('Morocco')} Morocco",
+                         f"{config.COUNTRIES.get('Turkey')} Turkey",
+                         f"{config.COUNTRIES.get('Mexico')} Mexico",
+                         f"{config.COUNTRIES.get('SriLanka')} SriLanka"]
             inline_gathering = InlineKeyboardMarkup()
             v = 1
             for i in countries:
@@ -438,14 +449,14 @@ class SunGathering:
                                                              callback_data=f'sun_gathering_{i}'))
                 v += 1
             await bot.send_message(message.from_user.id,
-                                   f"Choose the SunGathering you were in",
+                                   f"Choose the SunGathering",
                                    reply_markup=inline_gathering)
         if "Choose SunUniversity" in message.text:
-            countries = [f"{config.COUNTRIES.get('INDIA')} India",
-                         f"{config.COUNTRIES.get('SRI-LANKA')} SriLanka",
-                         f"{config.COUNTRIES.get('TURKEY')} Turkey",
-                         f"{config.COUNTRIES.get('THAILAND')} Thailand",
-                         f"{config.COUNTRIES.get('ALBANIA')} Albania"]
+            countries = [f"{config.COUNTRIES.get('India')} India",
+                         f"{config.COUNTRIES.get('SriLanka')} SriLanka",
+                         f"{config.COUNTRIES.get('Turkey')} Turkey",
+                         f"{config.COUNTRIES.get('Thailand')} Thailand",
+                         f"{config.COUNTRIES.get('Albania')} Albania"]
             inline_university = InlineKeyboardMarkup()
             v = 1
             for i in countries:
@@ -453,7 +464,7 @@ class SunGathering:
                                                               callback_data=f'sun_university_{i}'))
                 v += 1
             await bot.send_message(message.from_user.id,
-                                   f"Choose the SunUniversity you were in",
+                                   f"Choose the SunUniversity",
                                    reply_markup=inline_university)
 
     @staticmethod

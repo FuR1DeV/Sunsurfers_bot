@@ -61,16 +61,16 @@ KEYBOARD = {
 }
 
 COUNTRIES = {
-    'THAILAND': emojize(':Thailand:'),
-    'INDIA': emojize(':India:'),
-    'VIETNAM': emojize(':Vietnam:'),
-    'PHILIPPINES': emojize(':Philippines:'),
-    'GEORGIA': emojize(':Georgia:'),
-    'INDONESIA': emojize(':Indonesia:'),
-    'NEPAL': emojize(':Nepal:'),
-    'MOROCCO': emojize(':Morocco:'),
-    'TURKEY': emojize(':Turkey:'),
-    'MEXICO': emojize(':Mexico:'),
-    'SRI-LANKA': emojize(':Sri_Lanka:'),
-    'ALBANIA': emojize(':Albania:'),
+    'Thailand': emojize(':Thailand:'),
+    'India': emojize(':India:'),
+    'Vietnam': emojize(':Vietnam:'),
+    'Philippines': emojize(':Philippines:'),
+    'Georgia': emojize(':Georgia:'),
+    'Indonesia': emojize(':Indonesia:'),
+    'Nepal': emojize(':Nepal:'),
+    'Morocco': emojize(':Morocco:'),
+    'Turkey': emojize(':Turkey:'),
+    'Mexico': emojize(':Mexico:'),
+    'SriLanka': emojize(':Sri_Lanka:'),
+    'Albania': emojize(':Albania:'),
 }
