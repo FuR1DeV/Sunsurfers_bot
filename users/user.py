@@ -527,9 +527,14 @@ class EnterCountry:
             for i in sungatherings:
                 inline_gathering.insert(InlineKeyboardButton(text=f'{countries.get(i)} {i}',
                                                              callback_data=f'us_sun_a_{i}'))
-            await bot.send_message(message.from_user.id,
-                                   f"Choose the SunGathering",
-                                   reply_markup=inline_gathering)
+
+            if inline_gathering.values.get("inline_keyboard"):
+                await bot.send_message(message.from_user.id,
+                                       f"Choose the SunGathering",
+                                       reply_markup=inline_gathering)
+            else:
+                await bot.send_message(message.from_user.id,
+                                       f"While there are no SunGatherings in which he was")
         if "Main menu" in message.text:
             await bot.send_message(message.from_user.id,
                                    f"{message.from_user.first_name} You are in the main menu",
@@ -561,6 +566,7 @@ class EnterCountry:
         dp.register_callback_query_handler(EnterCountry.user_info_about_sun_gathering,
                                            state=states.Information.user_info,
                                            text_contains='us_sun_a_')
+
 
 class SunGathering:
     @staticmethod
