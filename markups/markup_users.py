@@ -16,8 +16,8 @@ def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} My profile",
                  f"{config.KEYBOARD.get('WORLD_MAP')} Locations")
-    keyboard.row(f"{config.KEYBOARD.get('WRENCH')} Services",
-                 f"{config.KEYBOARD.get('SUN')} SunGatherings")
+    keyboard.row(f"{config.KEYBOARD.get('WRENCH')} Projects",
+                 f"{config.KEYBOARD.get('SUN')} Events")
     return keyboard
 
 
@@ -45,26 +45,35 @@ def user_feedback():
     return keyboard
 
 
-def user_om():
+def projects():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('NAZAR_AMULET')} Human Design")
-    keyboard.row(f"{config.KEYBOARD.get('YIN_YANG')} Gene Keys")
-    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back")
-    return keyboard
-
-
-def services():
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} OM",
+    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} Marathons",
+                 f"{config.KEYBOARD.get('FOLDED_HANDS')} SunSchool")
+    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} Travel Book",
+                 f"{config.KEYBOARD.get('FOLDED_HANDS')} Ecovillage in Georgia",
                  f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 
 
+def marathons():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} Yoga marathon",
+                 f"{config.KEYBOARD.get('FOLDED_HANDS')} Interval training marathon")
+    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} Marathon of minimalism",
+                 f"{config.KEYBOARD.get('FOLDED_HANDS')} Marathon of early rises")
+    keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back")
+    return keyboard
+
+
 def sun_gathering_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('SUN')} Choose SunGathering",
-                 f"{config.KEYBOARD.get('SUN')} Choose SunUniversity")
+    keyboard.row(f"{config.KEYBOARD.get('SUN')} SunGathering",
+                 f"{config.KEYBOARD.get('SUN')} SunUniversity",
+                 f"{config.KEYBOARD.get('SUN')} SunAtorium",)
+    keyboard.row(f"{config.KEYBOARD.get('SUN')} Yoga Retreat",
+                 f"{config.KEYBOARD.get('SUN')} SunWomanCamp",
+                 f"{config.KEYBOARD.get('SUN')} Meetups")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
 

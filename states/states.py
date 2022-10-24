@@ -31,7 +31,7 @@ class Sun(StatesGroup):
     about: State = State()
 
 
-class Services(StatesGroup):
+class Projects(StatesGroup):
     start: State = State()
     help: State = State()
-    om: State = State()
+    marathons: State = State()
