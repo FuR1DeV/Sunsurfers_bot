@@ -16,7 +16,7 @@ def main_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} My profile",
                  f"{config.KEYBOARD.get('WORLD_MAP')} Locations")
-    keyboard.row(f"{config.KEYBOARD.get('WRENCH')} Projects",
+    keyboard.row(f"{config.KEYBOARD.get('RAISING_HANDS')} Projects",
                  f"{config.KEYBOARD.get('SUN')} Events")
     return keyboard
 
@@ -47,10 +47,10 @@ def user_feedback():
 
 def projects():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} Marathons",
-                 f"{config.KEYBOARD.get('FOLDED_HANDS')} SunSchool")
-    keyboard.row(f"{config.KEYBOARD.get('FOLDED_HANDS')} Travel Book",
-                 f"{config.KEYBOARD.get('FOLDED_HANDS')} Ecovillage in Georgia",
+    keyboard.row(f"{config.KEYBOARD.get('PERSON_RUNNING')} Marathons",
+                 f"{config.KEYBOARD.get('LOTUS_POSITION')} SunSchool")
+    keyboard.row(f"{config.KEYBOARD.get('GREEN_BOOK')} Travel Book",
+                 f"{config.KEYBOARD.get('TENT')} Ecovillage in Georgia",
                  f"{config.KEYBOARD.get('SOS_BUTTON')} Feedback")
     keyboard.row(f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu")
     return keyboard
