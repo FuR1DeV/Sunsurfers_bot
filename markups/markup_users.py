@@ -70,7 +70,7 @@ def sun_gathering_menu():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.row(f"{config.KEYBOARD.get('SUN')} SunGathering",
                  f"{config.KEYBOARD.get('SUN')} SunUniversity",
-                 f"{config.KEYBOARD.get('SUN')} SunAtorium",)
+                 f"{config.KEYBOARD.get('SUN')} SunAtorium", )
     keyboard.row(f"{config.KEYBOARD.get('SUN')} Yoga Retreat",
                  f"{config.KEYBOARD.get('SUN')} SunWomanCamp",
                  f"{config.KEYBOARD.get('SUN')} Meetups")
@@ -111,3 +111,30 @@ def add_event():
     add = InlineKeyboardButton(text='Add to this event', callback_data='add_to_event')
     inline_add.insert(add)
     return inline_add
+
+
+def sungatherings(countries_dict):
+    countries = [f"{config.COUNTRIES.get('Thailand')} Thailand",
+                 f"{config.COUNTRIES.get('India')} India",
+                 f"{config.COUNTRIES.get('Vietnam')} Vietnam",
+                 f"{config.COUNTRIES.get('Philippines')} Philippines",
+                 f"{config.COUNTRIES.get('Georgia')} Georgia",
+                 f"{config.COUNTRIES.get('Indonesia')} Indonesia",
+                 f"{config.COUNTRIES.get('Nepal')} Nepal",
+                 f"{config.COUNTRIES.get('Morocco')} Morocco",
+                 f"{config.COUNTRIES.get('Turkey')} Turkey",
+                 f"{config.COUNTRIES.get('Mexico')} Mexico",
+                 f"{config.COUNTRIES.get('SriLanka')} SriLanka"]
+    inline_gathering = InlineKeyboardMarkup()
+    v = 1
+    for i in countries:
+        if countries_dict.get(i.split()[1]) == 1:
+            inline_gathering.insert(InlineKeyboardButton(text=f'{config.KEYBOARD.get("CHECK_MARK_BUTTON")} {i}',
+                                                         callback_data=f"add_sin"))
+        else:
+            inline_gathering.insert(InlineKeyboardButton(text=f'{v}.0 {i}',
+                                                         callback_data=f'add_sun_gathering_{i}'))
+        v += 1
+    return inline_gathering
+
+

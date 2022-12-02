@@ -35,5 +35,19 @@ async def start(message: types.Message, state: FSMContext):
 #         await bot.send_message(message.from_user.id, "У вас нет прав доступа!")
 
 
+async def on_startup(_):
+
+    from data.db_gino import db
+    from data import db_gino
+    print("Database connected")
+    await db_gino.on_startup(dp)
+
+    """Удалить БД"""
+    # await db.gino.drop_all()
+
+    """Создание БД"""
+    await db.gino.create_all()
+
+
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
