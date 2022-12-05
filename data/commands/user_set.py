@@ -42,31 +42,31 @@ async def user_set_geo(user_id, country, state, province, city, town, address, l
                       latitude=latitude, longitude=longitude, updated_location=updated_location).apply()
 
 
-async def user_update_sungathering(user_id, country):
+async def user_update_sungathering(user_id, country, switch: int):
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     match country:
         case "Thailand":
-            await user.update(thailand=1).apply()
+            await user.update(thailand=switch).apply()
         case "India":
-            await user.update(india=1).apply()
+            await user.update(india=switch).apply()
         case "Vietnam":
-            await user.update(vietnam=1).apply()
+            await user.update(vietnam=switch).apply()
         case "Philippines":
-            await user.update(philippines=1).apply()
+            await user.update(philippines=switch).apply()
         case "Georgia":
-            await user.update(georgia=1).apply()
+            await user.update(georgia=switch).apply()
         case "Indonesia":
-            await user.update(indonesia=1).apply()
+            await user.update(indonesia=switch).apply()
         case "Nepal":
-            await user.update(nepal=1).apply()
+            await user.update(nepal=switch).apply()
         case "Morocco":
-            await user.update(morocco=1).apply()
+            await user.update(morocco=switch).apply()
         case "Turkey":
-            await user.update(turkey=1).apply()
+            await user.update(turkey=switch).apply()
         case "Mexico":
-            await user.update(mexico=1).apply()
+            await user.update(mexico=switch).apply()
         case "SriLanka":
-            await user.update(srilanka=1).apply()
+            await user.update(srilanka=switch).apply()
 
 
 async def user_set_sun_gathering_about(user_id, country, message):

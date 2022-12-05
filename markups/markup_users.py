@@ -139,3 +139,12 @@ def sungatherings(countries_dict):
                                                       f"{config.KEYBOARD.get('CHECK_MARK_BUTTON')}",
                                                  callback_data=f'clean'))
     return inline_gathering
+
+
+def delete_from_sungathering():
+    inline_delete = InlineKeyboardMarkup()
+    inline_delete.insert(InlineKeyboardButton(text=f'{config.KEYBOARD.get("CROSS_MARK")} '
+                                                   f'Delete me from this Sungathering '
+                                                   f'{config.KEYBOARD.get("CROSS_MARK")}',
+                                              callback_data='delete_me'))
+    return inline_delete

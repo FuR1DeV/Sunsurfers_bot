@@ -102,7 +102,7 @@ class UserMain:
                                    "You need to click on the submit my location button\n")
 
     @staticmethod
-    async def main(callback: types.CallbackQuery, state: FSMContext):
+    async def geo_position_approve(callback: types.CallbackQuery, state: FSMContext):
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         async with state.proxy() as data:
             await user_set.user_add(callback.from_user.id,
@@ -176,15 +176,20 @@ class UserMain:
                                    "Here you can view information about SunGatherings",
                                    reply_markup=markup_users.sun_gathering_menu())
             await states.Sun.sun_menu.set()
-            await Events.register_sun_gathering(dp)
+            Events.register_sun_gathering(dp)
 
     @staticmethod
     def register_user_handler(disp: Dispatcher):
-        disp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
-        disp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
+        disp.register_callback_query_handler(UserMain.hi_user,
+                                             text='enter_bot')
+        disp.register_message_handler(UserMain.geo_position,
+                                      content_types=['location', 'text'],
                                       state=states.UserStart.geo)
-        disp.register_callback_query_handler(UserMain.main, state=states.UserStart.geo, text='enter_menu')
-        disp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
+        disp.register_callback_query_handler(UserMain.geo_position_approve,
+                                             state=states.UserStart.geo,
+                                             text='enter_menu')
+        disp.register_message_handler(UserMain.user_menu,
+                                      state=states.UserStart.user_menu)
 
 
 class UserProfile:
@@ -712,7 +717,7 @@ class Events:
     async def add_gathering(callback: types.CallbackQuery):
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         country = callback.data.split()[1]
-        await user_set.user_update_sungathering(callback.from_user.id, country)
+        await user_set.user_update_sungathering(callback.from_user.id, country, 1)
         user_countries = await user_get.user_get_event_sungathering(callback.from_user.id)
         countries_dict = {"Thailand": 0, "India": 0, "Vietnam": 0, "Philippines": 0, "Georgia": 0, "Indonesia": 0,
                           "Nepal": 0, "Morocco": 0, "Turkey": 0, "Mexico": 0, "SriLanka": 0}
@@ -798,8 +803,14 @@ class Events:
                 v = 1
                 for i in all_users:
                     user = await user_get.user_select(i.user_id)
-                    await bot.send_message(message.from_user.id,
-                                           f"{v}. @{user.username} | {user.first_name}")
+                    if user.username == message.from_user.username:
+                        await bot.send_message(message.from_user.id,
+                                               f"{v}. @{user.username} | {user.first_name} | It's you",
+                                               reply_markup=markup_users.delete_from_sungathering())
+                    else:
+                        await bot.send_message(message.from_user.id,
+                                               f"{v}. @{user.username} | {user.first_name}")
+
                     v += 1
             else:
                 await bot.send_message(message.from_user.id,
@@ -815,7 +826,8 @@ class Events:
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         async with state.proxy() as data:
             await user_set.user_update_sungathering(callback.from_user.id,
-                                                    data.get("sun_gathering_country"))
+                                                    data.get("sun_gathering_country"),
+                                                    1)
         await bot.send_message(callback.from_user.id,
                                f"Great you were at this event! <b>SunGathering - "
                                f"{data.get('sun_gathering_country')}</b>\n",
@@ -843,7 +855,17 @@ class Events:
                                    reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
     @staticmethod
-    async def register_sun_gathering(disp: Dispatcher):
+    async def delete_from_sungathering(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        async with state.proxy() as data:
+            country = data.get("sun_gathering_country")
+        await user_set.user_update_sungathering(callback.from_user.id, country, 0)
+        await bot.send_message(callback.from_user.id,
+                               "You have been removed from this event",
+                               reply_markup=markup_users.sun_gathering_menu_select_country(False))
+
+    @staticmethod
+    def register_sun_gathering(disp: Dispatcher):
         disp.register_message_handler(Events.sun_main,
                                       state=states.Sun.sun_menu)
         disp.register_callback_query_handler(Events.add_gathering,
@@ -862,6 +884,9 @@ class Events:
         disp.register_callback_query_handler(Events.finish_sun_gathering,
                                              state="*",
                                              text='clean')
+        disp.register_callback_query_handler(Events.delete_from_sungathering,
+                                             state="*",
+                                             text='delete_me')
 
 
 class Projects:
