@@ -8,7 +8,6 @@ from geopy.geocoders import Nominatim
 
 from bot import bot, dp
 from data.commands import user_get, user_set
-# from data.get_set_db import global_get_db_obj, user_get_db_obj, user_set_db_obj
 from markups import markup_start, markup_users
 from settings import config
 from states import states
@@ -96,7 +95,7 @@ class UserMain:
                     data["address"] = address
                     data["latitude"] = latitude
                     data["longitude"] = longitude
-                    data["time_location"] = datetime.now().strftime('%d-%m-%Y, %H:%M:%S')
+                    data["time_location"] = datetime.now().strftime('%d %B %Y')
         except AttributeError:
             await bot.send_message(message.from_user.id,
                                    "Something went wrong\n"
@@ -180,12 +179,12 @@ class UserMain:
             await Events.register_sun_gathering(dp)
 
     @staticmethod
-    def register_user_handler(dp: Dispatcher):
-        dp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
-        dp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
-                                    state=states.UserStart.geo)
-        dp.register_callback_query_handler(UserMain.main, state=states.UserStart.geo, text='enter_menu')
-        dp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
+    def register_user_handler(disp: Dispatcher):
+        disp.register_callback_query_handler(UserMain.hi_user, text='enter_bot')
+        disp.register_message_handler(UserMain.geo_position, content_types=['location', 'text'],
+                                      state=states.UserStart.geo)
+        disp.register_callback_query_handler(UserMain.main, state=states.UserStart.geo, text='enter_menu')
+        disp.register_message_handler(UserMain.user_menu, state=states.UserStart.user_menu)
 
 
 class UserProfile:
@@ -267,7 +266,7 @@ class UserProfile:
                                        "<b>You are back in Update Information</b>",
                                        reply_markup=markup_users.user_profile_update_info())
                 await states.UserProfile.update_info.set()
-        except:
+        except TypeError:
             try:
                 n = Nominatim(user_agent='User')
                 loc = f"{message.location.latitude}, {message.location.longitude}"
@@ -321,7 +320,7 @@ class UserProfile:
                         data["address"] = address
                         data["latitude"] = latitude
                         data["longitude"] = longitude
-                        data["time_location"] = str(datetime.now())[:19]
+                        data["time_location"] = datetime.now().strftime('%d %B %Y')
             except AttributeError:
                 await bot.send_message(message.from_user.id,
                                        "Something went wrong\n"
@@ -389,21 +388,21 @@ class UserProfile:
             await states.UserProfile.update_info.set()
 
     @staticmethod
-    def register_user_profile(dp):
-        dp.register_message_handler(UserProfile.user_profile,
-                                    state=states.UserProfile.my_profile)
-        dp.register_message_handler(UserProfile.update_information,
-                                    state=states.UserProfile.update_info)
-        dp.register_message_handler(UserProfile.update_location, content_types=['location', 'text'],
-                                    state=states.UserProfile.update_location)
-        dp.register_callback_query_handler(UserProfile.update_location_menu,
-                                           state=states.UserProfile.update_location)
-        dp.register_message_handler(UserProfile.update_about_me,
-                                    state=states.UserProfile.update_about_me)
-        dp.register_message_handler(UserProfile.update_first_name,
-                                    state=states.UserProfile.update_first_name)
-        dp.register_message_handler(UserProfile.update_last_name,
-                                    state=states.UserProfile.update_last_name)
+    def register_user_profile(disp: Dispatcher):
+        disp.register_message_handler(UserProfile.user_profile,
+                                      state=states.UserProfile.my_profile)
+        disp.register_message_handler(UserProfile.update_information,
+                                      state=states.UserProfile.update_info)
+        disp.register_message_handler(UserProfile.update_location, content_types=['location', 'text'],
+                                      state=states.UserProfile.update_location)
+        disp.register_callback_query_handler(UserProfile.update_location_menu,
+                                             state=states.UserProfile.update_location)
+        disp.register_message_handler(UserProfile.update_about_me,
+                                      state=states.UserProfile.update_about_me)
+        disp.register_message_handler(UserProfile.update_first_name,
+                                      state=states.UserProfile.update_first_name)
+        disp.register_message_handler(UserProfile.update_last_name,
+                                      state=states.UserProfile.update_last_name)
 
 
 class EnterCountry:
@@ -515,18 +514,18 @@ class EnterCountry:
                                    reply_markup=markup_users.user_choose())
 
     @staticmethod
-    def register_enter_country(dp):
-        dp.register_callback_query_handler(EnterCountry.country,
-                                           state=states.UserStart.user_menu,
-                                           text_contains='country_')
-        dp.register_callback_query_handler(EnterCountry.user,
-                                           state=states.UserStart.user_menu,
-                                           text_contains='user_')
-        dp.register_message_handler(EnterCountry.user_info,
-                                    state=states.Information.user_info)
-        dp.register_callback_query_handler(EnterCountry.user_info_about_sun_gathering,
-                                           state=states.Information.user_info,
-                                           text_contains='us_sun_a_')
+    def register_enter_country(disp: Dispatcher):
+        disp.register_callback_query_handler(EnterCountry.country,
+                                             state=states.UserStart.user_menu,
+                                             text_contains='country_')
+        disp.register_callback_query_handler(EnterCountry.user,
+                                             state=states.UserStart.user_menu,
+                                             text_contains='user_')
+        disp.register_message_handler(EnterCountry.user_info,
+                                      state=states.Information.user_info)
+        disp.register_callback_query_handler(EnterCountry.user_info_about_sun_gathering,
+                                             state=states.Information.user_info,
+                                             text_contains='us_sun_a_')
 
 
 class Events:
@@ -760,25 +759,25 @@ class Events:
                                    reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
     @staticmethod
-    async def register_sun_gathering(dp):
-        dp.register_message_handler(Events.sun_main,
-                                    state=states.Sun.sun_menu)
-        dp.register_callback_query_handler(Events.add_gathering,
-                                           state=states.Sun.sun_menu,
-                                           text_contains='add_sun_gathering_')
-        dp.register_callback_query_handler(Events.select_sun_gathering,
-                                           state=states.Sun.sun_menu,
-                                           text_contains='sun_gathering_')
-        dp.register_message_handler(Events.select_sun_gathering_menu,
-                                    state=states.Sun.country_menu)
-        dp.register_callback_query_handler(Events.add_person_to_sun_gathering,
-                                           state="*",
-                                           text='add_to_event')
-        dp.register_message_handler(Events.about_sun_gathering,
-                                    state=states.Sun.about)
-        dp.register_callback_query_handler(Events.finish_sun_gathering,
-                                           state="*",
-                                           text='clean')
+    async def register_sun_gathering(disp: Dispatcher):
+        disp.register_message_handler(Events.sun_main,
+                                      state=states.Sun.sun_menu)
+        disp.register_callback_query_handler(Events.add_gathering,
+                                             state=states.Sun.sun_menu,
+                                             text_contains='add_sun_gathering_')
+        disp.register_callback_query_handler(Events.select_sun_gathering,
+                                             state=states.Sun.sun_menu,
+                                             text_contains='sun_gathering_')
+        disp.register_message_handler(Events.select_sun_gathering_menu,
+                                      state=states.Sun.country_menu)
+        disp.register_callback_query_handler(Events.add_person_to_sun_gathering,
+                                             state="*",
+                                             text='add_to_event')
+        disp.register_message_handler(Events.about_sun_gathering,
+                                      state=states.Sun.about)
+        disp.register_callback_query_handler(Events.finish_sun_gathering,
+                                             state="*",
+                                             text='clean')
 
 
 class Projects:
@@ -852,10 +851,10 @@ class Projects:
                                    reply_markup=markup_users.projects())
 
     @staticmethod
-    def register_services(dp):
-        dp.register_message_handler(Projects.services,
-                                    state=states.Projects.start)
-        dp.register_message_handler(Projects.help,
-                                    state=states.Projects.help)
-        dp.register_message_handler(Projects.marathons,
-                                    state=states.Projects.marathons)
+    def register_services(disp: Dispatcher):
+        disp.register_message_handler(Projects.services,
+                                      state=states.Projects.start)
+        disp.register_message_handler(Projects.help,
+                                      state=states.Projects.help)
+        disp.register_message_handler(Projects.marathons,
+                                      state=states.Projects.marathons)
