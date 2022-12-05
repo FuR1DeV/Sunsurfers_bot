@@ -1,5 +1,3 @@
-from sqlalchemy import and_
-
 from data.models.users import Users
 from data.models.events import Sungatherings
 from settings.config import COUNTRIES
