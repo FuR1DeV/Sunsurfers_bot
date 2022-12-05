@@ -2,6 +2,7 @@ from sqlalchemy import and_
 
 from data.models.users import Users
 from data.models.events import Sungatherings
+from settings.config import COUNTRIES
 
 
 """Functions for get information from the database"""
@@ -110,3 +111,31 @@ async def check_users_in_sun_gathering(country):
         case "SriLanka":
             users = await Sungatherings.query.where(Sungatherings.srilanka == 1).gino.all()
             return users
+
+
+async def user_get_count_sungatherings(user_id):
+    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    countries = []
+    if user.thailand:
+        countries.append(f"{COUNTRIES.get('Thailand')} Thailand")
+    if user.india:
+        countries.append(f"{COUNTRIES.get('India')} India")
+    if user.vietnam:
+        countries.append(f"{COUNTRIES.get('Vietnam')} Vietnam")
+    if user.philippines:
+        countries.append(f"{COUNTRIES.get('Philippines')} Philippines")
+    if user.georgia:
+        countries.append(f"{COUNTRIES.get('Georgia')} Georgia")
+    if user.indonesia:
+        countries.append(f"{COUNTRIES.get('Indonesia')} Indonesia")
+    if user.nepal:
+        countries.append(f"{COUNTRIES.get('Nepal')} Nepal")
+    if user.morocco:
+        countries.append(f"{COUNTRIES.get('Morocco')} Morocco")
+    if user.turkey:
+        countries.append(f"{COUNTRIES.get('Turkey')} Turkey")
+    if user.mexico:
+        countries.append(f"{COUNTRIES.get('Mexico')} Mexico")
+    if user.srilanka:
+        countries.append(f"{COUNTRIES.get('SriLanka')} SriLanka")
+    return countries

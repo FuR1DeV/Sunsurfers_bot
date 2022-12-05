@@ -129,24 +129,10 @@ class UserMain:
     async def user_menu(message: types.Message, state: FSMContext):
         await state.finish()
         if "My profile" in message.text:
-            countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
-                         f"{config.COUNTRIES.get('India')}": "India",
-                         f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
-                         f"{config.COUNTRIES.get('Philippines')}": "Philippines",
-                         f"{config.COUNTRIES.get('Georgia')}": "Georgia",
-                         f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
-                         f"{config.COUNTRIES.get('Nepal')}": "Nepal",
-                         f"{config.COUNTRIES.get('Morocco')}": "Morocco",
-                         f"{config.COUNTRIES.get('Turkey')}": "Turkey",
-                         f"{config.COUNTRIES.get('Mexico')}": "Mexico",
-                         f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
             # UserProfile.register_user_profile(dp)
             user = await user_get.user_select(message.from_user.id)
             await states.UserProfile.my_profile.set()
-            # sungatherings = []
-            # for k, v in countries.items():
-            #     if user_get.user_get_info_country(user.user_id, v):
-            #         sungatherings.append(v)
+            sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -163,7 +149,7 @@ class UserMain:
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
-                                   # f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
         # if "Locations" in message.text:
@@ -180,12 +166,12 @@ class UserMain:
         #                            reply_markup=inline_country)
         #     EnterCountry.register_enter_country(dp)
         #     await states.UserStart.user_menu.set()
-        # if "Projects" in message.text:
-        #     await bot.send_message(message.from_user.id,
-        #                            "Here are the services that can be implemented in the future",
-        #                            reply_markup=markup_users.projects())
-        #     await states.Projects.start.set()
-        #     Projects.register_services(dp)
+        if "Projects" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Here are the services that can be implemented in the future",
+                                   reply_markup=markup_users.projects())
+            await states.Projects.start.set()
+            Projects.register_services(dp)
         if "Events" in message.text:
             await bot.send_message(message.from_user.id,
                                    "Here you can view information about SunGatherings",
