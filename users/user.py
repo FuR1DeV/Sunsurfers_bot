@@ -667,74 +667,72 @@ class Events:
             if user_countries.srilanka:
                 countries_dict["SriLanka"] = 1
         await bot.send_message(callback.from_user.id,
-                               "Choose which sungatherings you were on",
+                               "<b>Choose which sungatherings you were on</b>",
                                reply_markup=markup_users.sungatherings(countries_dict))
         await bot.send_message(callback.from_user.id,
                                f"{country} - Added!")
 
+    @staticmethod
+    async def select_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        res = callback.data.split()[1]
+        async with state.proxy() as data:
+            data["sun_gathering_country"] = res
+        await states.Sun.country_menu.set()
+        user_exist = await user_get.user_get_info_country(callback.from_user.id, res)
+        await bot.send_message(callback.from_user.id,
+                               f"Super! You choosed {res}",
+                               reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
+    @staticmethod
+    async def select_sun_gathering_menu(message: types.Message, state: FSMContext):
+        async with state.proxy() as data:
+            res = data.get("sun_gathering_country")
+        if message.text == f"{config.KEYBOARD.get('SUNRISE')} About SunGathering":
+            await bot.send_message(message.from_user.id,
+                                   f"Here will be shown information about the SunGathering in {res}")
+        if message.text == f"{config.KEYBOARD.get('WAVING_HAND')} I was there!":
+            await bot.send_message(message.from_user.id,
+                                   "If you were at this SunGathering, "
+                                   "then you can be added to the participants of this event",
+                                   reply_markup=markup_users.add_event())
+        if message.text == f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering":
+            async with state.proxy() as data:
+                country = data.get("sun_gathering_country")
+            res = await user_get.check_user_sun_gathering(message.from_user.id,
+                                                          country)
+            if res:
+                await bot.send_message(message.from_user.id,
+                                       "Describe your memories\n"
+                                       "Now your memories are:\n"
+                                       f"<b>{res}</b>",
+                                       reply_markup=markup_users.about_sun_gathering())
+                await states.Sun.about.set()
+            else:
+                await bot.send_message(message.from_user.id,
+                                       "Describe your memories",
+                                       reply_markup=markup_users.about_sun_gathering())
+                await states.Sun.about.set()
+        if message.text == f"{config.KEYBOARD.get('EX_QUEST_MARK')} Who was there?":
+            all_users = await user_get.check_users_in_sun_gathering(res)
+            if all_users:
+                await bot.send_message(message.from_user.id,
+                                       "Here's who was on the SunGathering")
+                v = 1
+                for i in all_users:
+                    user = await user_get.user_select(i.user_id)
+                    await bot.send_message(message.from_user.id,
+                                           f"{v}. @{user.username} | {user.first_name}")
+                    v += 1
+            else:
+                await bot.send_message(message.from_user.id,
+                                       "No one yet =(")
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
+            await states.Sun.sun_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   "You have returned to the main menu",
+                                   reply_markup=markup_users.sun_gathering_menu())
 
-
-    # @staticmethod
-    # async def select_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
-    #     await bot.delete_message(callback.from_user.id, callback.message.message_id)
-    #     res = callback.data.split()[1]
-    #     async with state.proxy() as data:
-    #         data["sun_gathering_country"] = res
-    #     await states.Sun.country_menu.set()
-    #     user_exist = user_get_db_obj.user_get_info_country(callback.from_user.id, res)
-    #     await bot.send_message(callback.from_user.id,
-    #                            f"Super! You choosed {res}",
-    #                            reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
-    #
-    # @staticmethod
-    # async def select_sun_gathering_menu(message: types.Message, state: FSMContext):
-    #     async with state.proxy() as data:
-    #         res = data.get("sun_gathering_country")
-    #     if message.text == f"{config.KEYBOARD.get('SUNRISE')} About SunGathering":
-    #         await bot.send_message(message.from_user.id,
-    #                                f"Here will be shown information about the SunGathering in {res}")
-    #     if message.text == f"{config.KEYBOARD.get('WAVING_HAND')} I was there!":
-    #         await bot.send_message(message.from_user.id,
-    #                                "If you were at this SunGathering, "
-    #                                "then you can be added to the participants of this event",
-    #                                reply_markup=markup_users.add_event())
-    #     if message.text == f"{config.KEYBOARD.get('CLIPBOARD')} My words about SunGathering":
-    #         async with state.proxy() as data:
-    #             country = data.get("sun_gathering_country")
-    #         res = global_get_db_obj.check_user_sun_gathering(message.from_user.id,
-    #                                                          country)
-    #         if res[2]:
-    #             await bot.send_message(message.from_user.id,
-    #                                    "Describe your memories\n"
-    #                                    "Now your memories are:\n"
-    #                                    f"<b>{res[2]}</b>",
-    #                                    reply_markup=markup_users.about_sun_gathering())
-    #             await states.Sun.about.set()
-    #         else:
-    #             await bot.send_message(message.from_user.id,
-    #                                    "Describe your memories",
-    #                                    reply_markup=markup_users.about_sun_gathering())
-    #             await states.Sun.about.set()
-    #     if message.text == f"{config.KEYBOARD.get('EX_QUEST_MARK')} Who was there?":
-    #         all_users = global_get_db_obj.check_users_in_sun_gathering(res)
-    #         if all_users:
-    #             await bot.send_message(message.from_user.id,
-    #                                    "Here's who was on the SunGathering")
-    #             v = 1
-    #             for i in all_users:
-    #                 await bot.send_message(message.from_user.id,
-    #                                        f"{v}. @{' | '.join(global_get_db_obj.load_username_first_last_name(i[1]))}")
-    #                 v += 1
-    #         else:
-    #             await bot.send_message(message.from_user.id,
-    #                                    "No one yet =(")
-    #     if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Main menu":
-    #         await states.Sun.sun_menu.set()
-    #         await bot.send_message(message.from_user.id,
-    #                                "You have returned to the main menu",
-    #                                reply_markup=markup_users.sun_gathering_menu())
-    #
     # @staticmethod
     # async def add_person_to_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
     #     await bot.delete_message(callback.from_user.id, callback.message.message_id)
@@ -785,11 +783,11 @@ class Events:
         dp.register_callback_query_handler(Events.add_gathering,
                                            state=states.Sun.sun_menu,
                                            text_contains='add_sun_gathering_')
-        # dp.register_callback_query_handler(Events.select_sun_gathering,
-        #                                    state=states.Sun.sun_menu,
-        #                                    text_contains='sun_gathering_')
-        # dp.register_message_handler(Events.select_sun_gathering_menu,
-        #                             state=states.Sun.country_menu)
+        dp.register_callback_query_handler(Events.select_sun_gathering,
+                                           state=states.Sun.sun_menu,
+                                           text_contains='sun_gathering_')
+        dp.register_message_handler(Events.select_sun_gathering_menu,
+                                    state=states.Sun.country_menu)
         # dp.register_callback_query_handler(Events.add_person_to_sun_gathering,
         #                                    state="*",
         #                                    text='add_to_event')
