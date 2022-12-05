@@ -733,48 +733,37 @@ class Events:
                                    "You have returned to the main menu",
                                    reply_markup=markup_users.sun_gathering_menu())
 
-    # @staticmethod
-    # async def add_person_to_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
-    #     await bot.delete_message(callback.from_user.id, callback.message.message_id)
-    #     res = None
-    #     try:
-    #         async with state.proxy() as data:
-    #             res = user_get_db_obj.user_get_info_country(callback.from_user.id,
-    #                                                         data.get("sun_gathering_country"))[0]
-    #     except TypeError:
-    #         pass
-    #     if res is None:
-    #         async with state.proxy() as data:
-    #             user_set_db_obj.user_set_sun_gathering(callback.from_user.id,
-    #                                                    data.get("sun_gathering_country").lower())
-    #         await bot.send_message(callback.from_user.id,
-    #                                f"Great you were at this event! <b>SunGathering - "
-    #                                f"{data.get('sun_gathering_country')}</b>\n",
-    #                                reply_markup=markup_users.sun_gathering_menu_select_country(True))
-    #     if res:
-    #         await bot.send_message(callback.from_user.id,
-    #                                "You are already there")
-    #
-    # @staticmethod
-    # async def about_sun_gathering(message: types.Message, state: FSMContext):
-    #     async with state.proxy() as data:
-    #         res = data.get("sun_gathering_country")
-    #     user_exist = user_get_db_obj.user_get_info_country(message.from_user.id, res)
-    #     if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
-    #         await states.Sun.country_menu.set()
-    #         await bot.send_message(message.from_user.id,
-    #                                f"You are in {res}",
-    #                                reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
-    #     if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
-    #         async with state.proxy() as data:
-    #             user_set_db_obj.user_set_sun_gathering_about(message.from_user.id,
-    #                                                          data.get("sun_gathering_country"),
-    #                                                          message.text)
-    #         await states.Sun.country_menu.set()
-    #         await bot.send_message(message.from_user.id,
-    #                                f"Success! Your data has been updated!\n"
-    #                                f"You are in {res}",
-    #                                reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
+    @staticmethod
+    async def add_person_to_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        async with state.proxy() as data:
+            await user_set.user_update_sungathering(callback.from_user.id,
+                                                    data.get("sun_gathering_country"))
+        await bot.send_message(callback.from_user.id,
+                               f"Great you were at this event! <b>SunGathering - "
+                               f"{data.get('sun_gathering_country')}</b>\n",
+                               reply_markup=markup_users.sun_gathering_menu_select_country(True))
+
+    @staticmethod
+    async def about_sun_gathering(message: types.Message, state: FSMContext):
+        async with state.proxy() as data:
+            res = data.get("sun_gathering_country")
+        user_exist = await user_get.user_get_info_country(message.from_user.id, res)
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await states.Sun.country_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   f"You are in {res}",
+                                   reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            async with state.proxy() as data:
+                await user_set.user_set_sun_gathering_about(message.from_user.id,
+                                                            data.get("sun_gathering_country"),
+                                                            message.text)
+            await states.Sun.country_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   f"Success! Your data has been updated!\n"
+                                   f"You are in {res}",
+                                   reply_markup=markup_users.sun_gathering_menu_select_country(user_exist))
 
     @staticmethod
     async def register_sun_gathering(dp):
@@ -788,11 +777,11 @@ class Events:
                                            text_contains='sun_gathering_')
         dp.register_message_handler(Events.select_sun_gathering_menu,
                                     state=states.Sun.country_menu)
-        # dp.register_callback_query_handler(Events.add_person_to_sun_gathering,
-        #                                    state="*",
-        #                                    text='add_to_event')
-        # dp.register_message_handler(Events.about_sun_gathering,
-        #                             state=states.Sun.about)
+        dp.register_callback_query_handler(Events.add_person_to_sun_gathering,
+                                           state="*",
+                                           text='add_to_event')
+        dp.register_message_handler(Events.about_sun_gathering,
+                                    state=states.Sun.about)
 
 
 # class Projects:

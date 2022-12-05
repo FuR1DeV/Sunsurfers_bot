@@ -54,6 +54,28 @@ async def user_update_sungathering(user_id, country):
             await user.update(srilanka=1).apply()
 
 
-
-
-
+async def user_set_sun_gathering_about(user_id, country, message):
+    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    match country:
+        case "Thailand":
+            await user.update(thailand_info=message).apply()
+        case "India":
+            await user.update(india_info=message).apply()
+        case "Vietnam":
+            await user.update(vietnam_info=message).apply()
+        case "Philippines":
+            await user.update(philippines_info=message).apply()
+        case "Georgia":
+            await user.update(georgia_info=message).apply()
+        case "Indonesia":
+            await user.update(indonesia_info=message).apply()
+        case "Nepal":
+            await user.update(nepal_info=message).apply()
+        case "Morocco":
+            await user.update(morocco_info=message).apply()
+        case "Turkey":
+            await user.update(turkey_info=message).apply()
+        case "Mexico":
+            await user.update(mexico_info=message).apply()
+        case "SriLanka":
+            await user.update(srilanka_info=message).apply()
