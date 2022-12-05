@@ -128,7 +128,7 @@ class UserMain:
     async def user_menu(message: types.Message, state: FSMContext):
         await state.finish()
         if "My profile" in message.text:
-            UserProfile.register_user_profile(dp)
+            await UserProfile.register_user_profile(dp)
             user = await user_get.user_select(message.from_user.id)
             await states.UserProfile.my_profile.set()
             sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
@@ -163,23 +163,23 @@ class UserMain:
             await bot.send_message(message.from_user.id,
                                    f"Display all countries in which there are friends",
                                    reply_markup=inline_country)
-            EnterCountry.register_enter_country(dp)
+            await EnterCountry.register_enter_country(dp)
             await states.UserStart.user_menu.set()
         if "Projects" in message.text:
             await bot.send_message(message.from_user.id,
                                    "Here are the services that can be implemented in the future",
                                    reply_markup=markup_users.projects())
             await states.Projects.start.set()
-            Projects.register_services(dp)
+            await Projects.register_services(dp)
         if "Events" in message.text:
             await bot.send_message(message.from_user.id,
                                    "Here you can view information about SunGatherings",
                                    reply_markup=markup_users.sun_gathering_menu())
             await states.Sun.sun_menu.set()
-            Events.register_sun_gathering(dp)
+            await Events.register_sun_gathering(dp)
 
     @staticmethod
-    def register_user_handler(disp: Dispatcher):
+    async def register_user_handler(disp: Dispatcher):
         disp.register_callback_query_handler(UserMain.hi_user,
                                              text='enter_bot')
         disp.register_message_handler(UserMain.geo_position,
@@ -477,7 +477,7 @@ class UserProfile:
             await states.UserProfile.update_info.set()
 
     @staticmethod
-    def register_user_profile(disp: Dispatcher):
+    async def register_user_profile(disp: Dispatcher):
         disp.register_message_handler(UserProfile.user_profile,
                                       state=states.UserProfile.my_profile)
         disp.register_message_handler(UserProfile.update_information,
@@ -603,7 +603,7 @@ class EnterCountry:
                                    reply_markup=markup_users.user_choose())
 
     @staticmethod
-    def register_enter_country(disp: Dispatcher):
+    async def register_enter_country(disp: Dispatcher):
         disp.register_callback_query_handler(EnterCountry.country,
                                              state=states.UserStart.user_menu,
                                              text_contains='country_')
@@ -865,7 +865,7 @@ class Events:
                                reply_markup=markup_users.sun_gathering_menu_select_country(False))
 
     @staticmethod
-    def register_sun_gathering(disp: Dispatcher):
+    async def register_sun_gathering(disp: Dispatcher):
         disp.register_message_handler(Events.sun_main,
                                       state=states.Sun.sun_menu)
         disp.register_callback_query_handler(Events.add_gathering,
@@ -960,7 +960,7 @@ class Projects:
                                    reply_markup=markup_users.projects())
 
     @staticmethod
-    def register_services(disp: Dispatcher):
+    async def register_services(disp: Dispatcher):
         disp.register_message_handler(Projects.services,
                                       state=states.Projects.start)
         disp.register_message_handler(Projects.help,

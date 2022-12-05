@@ -15,7 +15,7 @@ async def start(message: types.Message, state: FSMContext):
     await bot.send_message(message.from_user.id,
                            f'<b>Click start to start using the bot</b>',
                            reply_markup=markup_start.start())
-    UserMain.register_user_handler(dp)
+    await UserMain.register_user_handler(dp)
 
 
 async def on_startup(_):
