@@ -579,12 +579,13 @@ class Events:
                                    reply_markup=markup_users.main_menu())
         if "SunGathering" in message.text:
             user = await user_get.user_get_event_sungathering(message.from_user.id)
+            countries_dict = {"Thailand": 0, "India": 0, "Vietnam": 0, "Philippines": 0, "Georgia": 0,
+                              "Indonesia": 0, "Nepal": 0, "Morocco": 0, "Turkey": 0, "Mexico": 0, "SriLanka": 0}
             if user is None:
-                countries_dict = {"Thailand": 0, "India": 0, "Vietnam": 0, "Philippines": 0, "Georgia": 0,
-                                  "Indonesia": 0, "Nepal": 0, "Morocco": 0, "Turkey": 0, "Mexico": 0, "SriLanka": 0}
                 await user_set.user_add_sungathering(message.from_user.id)
                 await bot.send_message(message.from_user.id,
-                                       "Choose which sungatherings you were on",
+                                       "<b>Choose which sungatherings you were on</b>\n"
+                                       "If you have not been to any SunGatherings, then select <b>That's all</b>",
                                        reply_markup=markup_users.sungatherings(countries_dict))
             else:
                 countries = [f"{config.COUNTRIES.get('Thailand')} Thailand",
@@ -598,11 +599,40 @@ class Events:
                              f"{config.COUNTRIES.get('Turkey')} Turkey",
                              f"{config.COUNTRIES.get('Mexico')} Mexico",
                              f"{config.COUNTRIES.get('SriLanka')} SriLanka"]
+                user_countries = await user_get.user_get_event_sungathering(message.from_user.id)
+                for i in range(1, 12):
+                    if user_countries.thailand:
+                        countries_dict["Thailand"] = 1
+                    if user_countries.india:
+                        countries_dict["India"] = 1
+                    if user_countries.vietnam:
+                        countries_dict["Vietnam"] = 1
+                    if user_countries.philippines:
+                        countries_dict["Philippines"] = 1
+                    if user_countries.georgia:
+                        countries_dict["Georgia"] = 1
+                    if user_countries.indonesia:
+                        countries_dict["Indonesia"] = 1
+                    if user_countries.nepal:
+                        countries_dict["Nepal"] = 1
+                    if user_countries.morocco:
+                        countries_dict["Morocco"] = 1
+                    if user_countries.turkey:
+                        countries_dict["Turkey"] = 1
+                    if user_countries.mexico:
+                        countries_dict["Mexico"] = 1
+                    if user_countries.srilanka:
+                        countries_dict["SriLanka"] = 1
                 inline_gathering = InlineKeyboardMarkup()
                 v = 1
                 for i in countries:
-                    inline_gathering.insert(InlineKeyboardButton(text=f'{v}.0 {i}',
-                                                                 callback_data=f'sun_gathering_{i}'))
+                    if countries_dict.get(i.split()[1]) == 1:
+                        inline_gathering.insert(
+                            InlineKeyboardButton(text=f'{v}.0 {config.KEYBOARD.get("CHECK_MARK_BUTTON")} {i}',
+                                                 callback_data=f'sun_gathering_{i}'))
+                    else:
+                        inline_gathering.insert(InlineKeyboardButton(text=f'{v}.0 {i}',
+                                                                     callback_data=f'sun_gathering_{i}'))
                     v += 1
                 await bot.send_message(message.from_user.id,
                                        f"Choose the SunGathering",
@@ -671,6 +701,10 @@ class Events:
                                reply_markup=markup_users.sungatherings(countries_dict))
         await bot.send_message(callback.from_user.id,
                                f"{country} - Added!")
+
+    @staticmethod
+    async def finish_sun_gathering(callback: types.CallbackQuery):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
 
     @staticmethod
     async def select_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
@@ -782,83 +816,86 @@ class Events:
                                            text='add_to_event')
         dp.register_message_handler(Events.about_sun_gathering,
                                     state=states.Sun.about)
+        dp.register_callback_query_handler(Events.finish_sun_gathering,
+                                           state="*",
+                                           text='clean')
 
 
-# class Projects:
-#     @staticmethod
-#     async def services(message: types.Message):
-#         if "Feedback" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "Describe your problem\n"
-#                                    "When you're done, you can return to the main menu",
-#                                    reply_markup=markup_users.user_feedback())
-#             await states.Projects.help.set()
-#         if "Marathons" in message.text:
-#             await states.Projects.marathons.set()
-#             await bot.send_message(message.from_user.id,
-#                                    "Information about marathons",
-#                                    reply_markup=markup_users.marathons())
-#         if "SunSchool" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "Information about SunSchool")
-#         if "Travel Book" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "Information about Travel Book")
-#         if "Ecovillage in Georgia" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "Information about Ecovillage in Georgia")
-#         if "Main menu" in message.text:
-#             await states.UserStart.user_menu.set()
-#             await bot.send_message(message.from_user.id,
-#                                    "You have returned to the main menu",
-#                                    reply_markup=markup_users.main_menu())
-#
-#     @staticmethod
-#     async def help(message: types.Message):
-#         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
-#             await bot.send_message(message.from_user.id,
-#                                    f"{message.from_user.first_name} You are in the services",
-#                                    reply_markup=markup_users.projects())
-#             await states.Projects.start.set()
-#         if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
-#             await bot.send_message('@sunsurfers_bot_help',
-#                                    f"Name {message.from_user.first_name}\n"
-#                                    f"ID {message.from_user.id}\n"
-#                                    f"Message - <b>{message.text}</b>\n")
-#             await states.Projects.start.set()
-#             await bot.send_message(message.from_user.id,
-#                                    "Message sent to tech support!",
-#                                    reply_markup=markup_users.projects())
-#
-#     @staticmethod
-#     async def marathons(message: types.Message):
-#         if "Yoga marathon" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "There will be information about\n"
-#                                    "Yoga marathon")
-#         if "Interval training marathon" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "There will be information about\n"
-#                                    "Interval training marathon")
-#         if "Marathon of minimalism" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "There will be information about\n"
-#                                    "Marathon of minimalism")
-#         if "Marathon of early rises" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    "There will be information about\n"
-#                                    "Marathon of early rises")
-#         if "Back" in message.text:
-#             await states.Projects.start.set()
-#             await bot.send_message(message.from_user.id,
-#                                    "You have returned to the services",
-#                                    reply_markup=markup_users.projects())
-#
-#     @staticmethod
-#     def register_services(dp):
-#         dp.register_message_handler(Projects.services,
-#                                     state=states.Projects.start)
-#         dp.register_message_handler(Projects.help,
-#                                     state=states.Projects.help)
-#         dp.register_message_handler(Projects.marathons,
-#                                     state=states.Projects.marathons)
+class Projects:
+    @staticmethod
+    async def services(message: types.Message):
+        if "Feedback" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Describe your problem\n"
+                                   "When you're done, you can return to the main menu",
+                                   reply_markup=markup_users.user_feedback())
+            await states.Projects.help.set()
+        if "Marathons" in message.text:
+            await states.Projects.marathons.set()
+            await bot.send_message(message.from_user.id,
+                                   "Information about marathons",
+                                   reply_markup=markup_users.marathons())
+        if "SunSchool" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Information about SunSchool")
+        if "Travel Book" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Information about Travel Book")
+        if "Ecovillage in Georgia" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "Information about Ecovillage in Georgia")
+        if "Main menu" in message.text:
+            await states.UserStart.user_menu.set()
+            await bot.send_message(message.from_user.id,
+                                   "You have returned to the main menu",
+                                   reply_markup=markup_users.main_menu())
+
+    @staticmethod
+    async def help(message: types.Message):
+        if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await bot.send_message(message.from_user.id,
+                                   f"{message.from_user.first_name} You are in the services",
+                                   reply_markup=markup_users.projects())
+            await states.Projects.start.set()
+        if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
+            await bot.send_message('@sunsurfers_bot_help',
+                                   f"Name {message.from_user.first_name}\n"
+                                   f"ID {message.from_user.id}\n"
+                                   f"Message - <b>{message.text}</b>\n")
+            await states.Projects.start.set()
+            await bot.send_message(message.from_user.id,
+                                   "Message sent to tech support!",
+                                   reply_markup=markup_users.projects())
+
+    @staticmethod
+    async def marathons(message: types.Message):
+        if "Yoga marathon" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "There will be information about\n"
+                                   "Yoga marathon")
+        if "Interval training marathon" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "There will be information about\n"
+                                   "Interval training marathon")
+        if "Marathon of minimalism" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "There will be information about\n"
+                                   "Marathon of minimalism")
+        if "Marathon of early rises" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   "There will be information about\n"
+                                   "Marathon of early rises")
+        if "Back" in message.text:
+            await states.Projects.start.set()
+            await bot.send_message(message.from_user.id,
+                                   "You have returned to the services",
+                                   reply_markup=markup_users.projects())
+
+    @staticmethod
+    def register_services(dp):
+        dp.register_message_handler(Projects.services,
+                                    state=states.Projects.start)
+        dp.register_message_handler(Projects.help,
+                                    state=states.Projects.help)
+        dp.register_message_handler(Projects.marathons,
+                                    state=states.Projects.marathons)

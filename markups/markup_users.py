@@ -135,6 +135,7 @@ def sungatherings(countries_dict):
             inline_gathering.insert(InlineKeyboardButton(text=f'{v}.0 {i}',
                                                          callback_data=f'add_sun_gathering_{i}'))
         v += 1
+    inline_gathering.insert(InlineKeyboardButton(text=f"{config.KEYBOARD.get('CHECK_MARK_BUTTON')} That's all "
+                                                      f"{config.KEYBOARD.get('CHECK_MARK_BUTTON')}",
+                                                 callback_data=f'clean'))
     return inline_gathering
-
-
