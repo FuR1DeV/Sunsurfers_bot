@@ -13,6 +13,11 @@ async def user_select(user_id):
     return user
 
 
+async def all_users():
+    users = await Users.query.gino.all()
+    return users
+
+
 async def user_get_event_sungathering(user_id):
     """User checks info about sun gathering in country"""
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
@@ -139,3 +144,13 @@ async def user_get_count_sungatherings(user_id):
     if user.srilanka:
         countries.append(f"{COUNTRIES.get('SriLanka')} SriLanka")
     return countries
+
+
+async def all_users_in_country(country):
+    users = await Users.query.where(Users.country == country).gino.all()
+    return users
+
+
+async def user_get_info_username(username):
+    user = await Users.query.where(Users.username == username).gino.first()
+    return user

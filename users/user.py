@@ -152,20 +152,20 @@ class UserMain:
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
                                    reply_markup=markup_users.user_profile())
-        # if "Locations" in message.text:
-        #     res = global_get_db_obj.all_users()
-        #     country = []
-        #     for i in res:
-        #         country.append(i[6])
-        #     inline_country = InlineKeyboardMarkup()
-        #     countrys = Counter(country)
-        #     for k, v in countrys.items():
-        #         inline_country.insert(InlineKeyboardButton(text=f'{k} ({v})', callback_data=f'country_{k}'))
-        #     await bot.send_message(message.from_user.id,
-        #                            f"Display all countries in which there are friends",
-        #                            reply_markup=inline_country)
-        #     EnterCountry.register_enter_country(dp)
-        #     await states.UserStart.user_menu.set()
+        if "Locations" in message.text:
+            res = await user_get.all_users()
+            country = []
+            for i in res:
+                country.append(i.country)
+            inline_country = InlineKeyboardMarkup()
+            countries = Counter(country)
+            for k, v in countries.items():
+                inline_country.insert(InlineKeyboardButton(text=f'{k} ({v})', callback_data=f'country_{k}'))
+            await bot.send_message(message.from_user.id,
+                                   f"Display all countries in which there are friends",
+                                   reply_markup=inline_country)
+            EnterCountry.register_enter_country(dp)
+            await states.UserStart.user_menu.set()
         if "Projects" in message.text:
             await bot.send_message(message.from_user.id,
                                    "Here are the services that can be implemented in the future",
@@ -420,139 +420,129 @@ class UserMain:
 #                                     state=states.UserProfile.update_first_name)
 #         dp.register_message_handler(UserProfile.update_last_name,
 #                                     state=states.UserProfile.update_last_name)
-#
-#
-# class EnterCountry:
-#     @staticmethod
-#     async def country(callback: types.CallbackQuery):
-#         await bot.delete_message(callback.from_user.id, callback.message.message_id)
-#         country = callback.data[8:]
-#         await bot.send_message(callback.from_user.id,
-#                                f"Great! You choose {country}\n"
-#                                f"Here are the people who are in this country")
-#         res = global_get_db_obj.all_users_in_country(country)
-#         inline_country = InlineKeyboardMarkup()
-#         for i in res:
-#             inline_country.insert(InlineKeyboardButton(text=f'{i[2]}', callback_data=f'user_{i[2]}'))
-#         await bot.send_message(callback.from_user.id,
-#                                f"Show all users in the selected country",
-#                                reply_markup=inline_country)
-#
-#     @staticmethod
-#     async def user(callback: types.CallbackQuery, state: FSMContext):
-#         countries = {f"{config.COUNTRIES.get('Thailand')}": "Thailand",
-#                      f"{config.COUNTRIES.get('India')}": "India",
-#                      f"{config.COUNTRIES.get('Vietnam')}": "Vietnam",
-#                      f"{config.COUNTRIES.get('Philippines')}": "Philippines",
-#                      f"{config.COUNTRIES.get('Georgia')}": "Georgia",
-#                      f"{config.COUNTRIES.get('Indonesia')}": "Indonesia",
-#                      f"{config.COUNTRIES.get('Nepal')}": "Nepal",
-#                      f"{config.COUNTRIES.get('Morocco')}": "Morocco",
-#                      f"{config.COUNTRIES.get('Turkey')}": "Turkey",
-#                      f"{config.COUNTRIES.get('Mexico')}": "Mexico",
-#                      f"{config.COUNTRIES.get('SriLanka')}": "SriLanka"}
-#         await bot.delete_message(callback.from_user.id, callback.message.message_id)
-#         user = callback.data[5:]
-#         await bot.send_message(callback.from_user.id,
-#                                f"Great! You choose {user}\n"
-#                                f"You can view information about this user")
-#         async with state.proxy() as data:
-#             res = user_get_db_obj.user_get_info_username(callback.from_user.id, user)
-#             data["user"] = res
-#         sungatherings = []
-#         for k, v in countries.items():
-#             if user_get_db_obj.user_get_info_country(res[1], v):
-#                 sungatherings.append(v)
-#         await bot.send_message(callback.from_user.id,
-#                                f"{config.KEYBOARD.get('DASH') * 14}\n"
-#                                f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
-#                                f"Name: <b>{res[3]} {res[4]}</b>\n"
-#                                f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-#                                f"Nickname: <b>@{res[2]}</b>\n"
-#                                f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-#                                f"Country: <b>{res[6]}</b> | State: <b>{res[7]}</b>\n"
-#                                f"{config.KEYBOARD.get('CITYSCAPE')} "
-#                                f"Province: <b>{res[8]}</b> | City: <b>{res[9]}</b>\n"
-#                                f"{config.KEYBOARD.get('TENT')} "
-#                                f"Town: <b>{res[10]}</b>\n"
-#                                f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-#                                f"Last Update: <b>{res[14].strftime('%d %B, %Y')}</b>\n"
-#                                f"{config.KEYBOARD.get('SUN')} "
-#                                f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
-#                                f"{config.KEYBOARD.get('DASH') * 14}",
-#                                reply_markup=markup_users.user_choose())
-#         await states.Information.user_info.set()
-#
-#     @staticmethod
-#     async def user_info(message: types.Message, state: FSMContext):
-#         async with state.proxy() as data:
-#             user_res = data.get("user")
-#         if "About him/her" in message.text:
-#             about = user_get_db_obj.user_about(user_res[1])[0]
-#             await bot.send_message(message.from_user.id,
-#                                    f"Information about this person\n"
-#                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
-#                                    f"<b>{about}</b>\n"
-#                                    f"{config.KEYBOARD.get('DASH') * 14}")
-#         if f"{config.KEYBOARD.get('SUN')} Words about SunGatherings" in message.text:
-#             countries = {"Thailand": f"1.0 {config.COUNTRIES.get('Thailand')}",
-#                          "India": f"2.0 {config.COUNTRIES.get('India')}",
-#                          "Vietnam": f"3.0 {config.COUNTRIES.get('Vietnam')}",
-#                          "Philippines": f"4.0 {config.COUNTRIES.get('Philippines')}",
-#                          "Georgia": f"5.0 {config.COUNTRIES.get('Georgia')}",
-#                          "Indonesia": f"6.0 {config.COUNTRIES.get('Indonesia')}",
-#                          "Nepal": f"7.0 {config.COUNTRIES.get('Nepal')}",
-#                          "Morocco": f"8.0 {config.COUNTRIES.get('Morocco')}",
-#                          "Turkey": f"9.0 {config.COUNTRIES.get('Turkey')}",
-#                          "Mexico": f"10.0 {config.COUNTRIES.get('Mexico')}",
-#                          "SriLanka": f"11.0 {config.COUNTRIES.get('SriLanka')}"}
-#             sungatherings = []
-#             for k, v in countries.items():
-#                 if user_get_db_obj.user_get_info_country(user_res[1], k):
-#                     sungatherings.append(k)
-#             inline_gathering = InlineKeyboardMarkup()
-#             for i in sungatherings:
-#                 inline_gathering.insert(InlineKeyboardButton(text=f'{countries.get(i)} {i}',
-#                                                              callback_data=f'us_sun_a_{i}'))
-#
-#             if inline_gathering.values.get("inline_keyboard"):
-#                 await bot.send_message(message.from_user.id,
-#                                        f"Choose the SunGathering",
-#                                        reply_markup=inline_gathering)
-#             else:
-#                 await bot.send_message(message.from_user.id,
-#                                        f"While there are no SunGatherings in which he was")
-#         if "Main menu" in message.text:
-#             await bot.send_message(message.from_user.id,
-#                                    f"{message.from_user.first_name} You are in the main menu",
-#                                    reply_markup=markup_users.main_menu())
-#             await states.UserStart.user_menu.set()
-#
-#     @staticmethod
-#     async def user_info_about_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
-#         await bot.delete_message(callback.from_user.id, callback.message.message_id)
-#         country = callback.data[9::]
-#         async with state.proxy() as data:
-#             user_res = data.get("user")
-#             about = global_get_db_obj.check_user_about_sun_gathering(user_res[1], country)[0]
-#         await bot.send_message(callback.from_user.id,
-#                                f"Words about SunGathering in <b>{country}</b>\n"
-#                                f"<b>{about}</b>",
-#                                reply_markup=markup_users.user_choose())
-#
-#     @staticmethod
-#     def register_enter_country(dp):
-#         dp.register_callback_query_handler(EnterCountry.country,
-#                                            state=states.UserStart.user_menu,
-#                                            text_contains='country_')
-#         dp.register_callback_query_handler(EnterCountry.user,
-#                                            state=states.UserStart.user_menu,
-#                                            text_contains='user_')
-#         dp.register_message_handler(EnterCountry.user_info,
-#                                     state=states.Information.user_info)
-#         dp.register_callback_query_handler(EnterCountry.user_info_about_sun_gathering,
-#                                            state=states.Information.user_info,
-#                                            text_contains='us_sun_a_')
+
+
+class EnterCountry:
+    @staticmethod
+    async def country(callback: types.CallbackQuery):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        country = callback.data[8:]
+        await bot.send_message(callback.from_user.id,
+                               f"Great! You choose {country}\n"
+                               f"Here are the people who are in this country")
+        res = await user_get.all_users_in_country(country)
+        inline_country = InlineKeyboardMarkup()
+        for i in res:
+            inline_country.insert(InlineKeyboardButton(text=f'{i.username}', callback_data=f'user_{i.username}'))
+        await bot.send_message(callback.from_user.id,
+                               f"Show all users in the selected country",
+                               reply_markup=inline_country)
+
+    @staticmethod
+    async def user(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        user = callback.data[5:]
+        await bot.send_message(callback.from_user.id,
+                               f"Great! You choose {user}\n"
+                               f"You can view information about this user")
+        async with state.proxy() as data:
+            res = await user_get.user_get_info_username(user)
+            data["user"] = res
+        sungatherings = await user_get.user_get_count_sungatherings(res.user_id)
+        await bot.send_message(callback.from_user.id,
+                               f"{config.KEYBOARD.get('DASH') * 14}\n"
+                               f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                               f"Name: <b>{res.first_name} {res.last_name}</b>\n"
+                               f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                               f"Nickname: <b>@{res.username}</b>\n"
+                               f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                               f"Country: <b>{res.country}</b> | State: <b>{res.state}</b>\n"
+                               f"{config.KEYBOARD.get('CITYSCAPE')} "
+                               f"Province: <b>{res.province}</b> | City: <b>{res.city}</b>\n"
+                               f"{config.KEYBOARD.get('TENT')} "
+                               f"Town: <b>{res.town}</b>\n"
+                               f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                               f"Last Update: <b>{res.updated_location}</b>\n"
+                               f"{config.KEYBOARD.get('SUN')} "
+                               f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
+                               f"{config.KEYBOARD.get('DASH') * 14}",
+                               reply_markup=markup_users.user_choose())
+        await states.Information.user_info.set()
+
+    @staticmethod
+    async def user_info(message: types.Message, state: FSMContext):
+        async with state.proxy() as data:
+            user_res = data.get("user")
+        if "About him/her" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   f"Information about this person\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<b>{user_res.about}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}")
+        if f"{config.KEYBOARD.get('SUN')} Words about SunGatherings" in message.text:
+            countries = {f"{config.COUNTRIES.get('Thailand')} Thailand": "1.0",
+                         f"{config.COUNTRIES.get('India')} India": "2.0",
+                         f"{config.COUNTRIES.get('Vietnam')} Vietnam": "3.0",
+                         f"{config.COUNTRIES.get('Philippines')} Philippines": "4.0",
+                         f"{config.COUNTRIES.get('Georgia')} Georgia": "5.0",
+                         f"{config.COUNTRIES.get('Indonesia')} Indonesia": "6.0",
+                         f"{config.COUNTRIES.get('Nepal')} Nepal": "7.0",
+                         f"{config.COUNTRIES.get('Morocco')} Morocco": "8.0",
+                         f"{config.COUNTRIES.get('Turkey')} Turkey": "9.0",
+                         f"{config.COUNTRIES.get('Mexico')} Mexico": "10.0",
+                         f"{config.COUNTRIES.get('SriLanka')} SriLanka": "11.0"}
+            sungatherings = await user_get.user_get_count_sungatherings(user_res.user_id)
+            inline_gathering = InlineKeyboardMarkup()
+            for i in sungatherings:
+                inline_gathering.insert(InlineKeyboardButton(text=f'{countries.get(i)} {i}',
+                                                             callback_data=f'us_sun_a_{i}'))
+
+            if inline_gathering.values.get("inline_keyboard"):
+                await bot.send_message(message.from_user.id,
+                                       f"Choose the SunGathering",
+                                       reply_markup=inline_gathering)
+            else:
+                await bot.send_message(message.from_user.id,
+                                       f"While there are no SunGatherings in which he was")
+        if "Main menu" in message.text:
+            await bot.send_message(message.from_user.id,
+                                   f"{message.from_user.first_name} You are in the main menu",
+                                   reply_markup=markup_users.main_menu())
+            await states.UserStart.user_menu.set()
+
+    @staticmethod
+    async def user_info_about_sun_gathering(callback: types.CallbackQuery, state: FSMContext):
+        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        country = callback.data.split()[1]
+        async with state.proxy() as data:
+            user_res = data.get("user")
+            about = await user_get.check_user_sun_gathering(user_res.user_id, country)
+        if about is None:
+            await bot.send_message(callback.from_user.id,
+                                   f"Words about SunGathering in <b>{country}:</b>\n"
+                                   f"\n"
+                                   f"<b>There is no information yet</b>",
+                                   reply_markup=markup_users.user_choose())
+        else:
+            await bot.send_message(callback.from_user.id,
+                                   f"Words about SunGathering in <b>{country}:</b>\n"
+                                   f"\n"
+                                   f"<b>{about}</b>",
+                                   reply_markup=markup_users.user_choose())
+
+    @staticmethod
+    def register_enter_country(dp):
+        dp.register_callback_query_handler(EnterCountry.country,
+                                           state=states.UserStart.user_menu,
+                                           text_contains='country_')
+        dp.register_callback_query_handler(EnterCountry.user,
+                                           state=states.UserStart.user_menu,
+                                           text_contains='user_')
+        dp.register_message_handler(EnterCountry.user_info,
+                                    state=states.Information.user_info)
+        dp.register_callback_query_handler(EnterCountry.user_info_about_sun_gathering,
+                                           state=states.Information.user_info,
+                                           text_contains='us_sun_a_')
 
 
 class Events:
