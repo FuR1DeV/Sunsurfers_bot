@@ -244,7 +244,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
                                    f"Name: <b>{user.first_name} {user.last_name}</b>\n"
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
-                                   f"Nickname: <b>@{message.from_user.username}</b>\n"
+                                   f"Nickname: <b>@{user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
                                    f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
@@ -342,17 +342,59 @@ class UserProfile:
                                         data.get("time_location"))
             await bot.send_message(callback.from_user.id,
                                    "Update completed!",
-                                   reply_markup=markup_users.user_profile_update_info())
-            await states.UserProfile.update_info.set()
+                                   reply_markup=markup_users.user_profile())
+            await states.UserProfile.my_profile.set()
+            user = await user_get.user_select(callback.from_user.id)
+            sungatherings = await user_get.user_get_count_sungatherings(callback.from_user.id)
+            await bot.send_message(callback.from_user.id,
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<em>Your Profile:</em>\n"
+                                   f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                                   f"Name: <b>{user.first_name} {user.last_name}</b>\n"
+                                   f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                                   f"Nickname: <b>@{user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"{config.KEYBOARD.get('CITYSCAPE')} "
+                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"{config.KEYBOARD.get('TENT')} "
+                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"{config.KEYBOARD.get('SUN')} "
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
 
     @staticmethod
     async def update_about_me(message: types.Message):
         if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await user_set.user_set_about_me(message.from_user.id, message.text)
             await bot.send_message(message.from_user.id,
-                                   "<b>Successfully!</b>",
-                                   reply_markup=markup_users.user_profile_update_info())
-            await states.UserProfile.update_info.set()
+                                   "Update completed!",
+                                   reply_markup=markup_users.user_profile())
+            await states.UserProfile.my_profile.set()
+            user = await user_get.user_select(message.from_user.id)
+            sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            await bot.send_message(message.from_user.id,
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<em>Your Profile:</em>\n"
+                                   f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                                   f"Name: <b>{user.first_name} {user.last_name}</b>\n"
+                                   f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                                   f"Nickname: <b>@{user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"{config.KEYBOARD.get('CITYSCAPE')} "
+                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"{config.KEYBOARD.get('TENT')} "
+                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"{config.KEYBOARD.get('SUN')} "
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
                                    "<b>You are back in Update Information</b>",
@@ -364,9 +406,30 @@ class UserProfile:
         if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await user_set.user_set_first_name(message.from_user.id, message.text)
             await bot.send_message(message.from_user.id,
-                                   "<b>Successfully!</b>",
-                                   reply_markup=markup_users.user_profile_update_info())
-            await states.UserProfile.update_info.set()
+                                   "Update completed!",
+                                   reply_markup=markup_users.user_profile())
+            await states.UserProfile.my_profile.set()
+            user = await user_get.user_select(message.from_user.id)
+            sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            await bot.send_message(message.from_user.id,
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<em>Your Profile:</em>\n"
+                                   f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                                   f"Name: <b>{user.first_name} {user.last_name}</b>\n"
+                                   f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                                   f"Nickname: <b>@{user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"{config.KEYBOARD.get('CITYSCAPE')} "
+                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"{config.KEYBOARD.get('TENT')} "
+                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"{config.KEYBOARD.get('SUN')} "
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
                                    "<b>You are back in Update Information</b>",
@@ -378,9 +441,30 @@ class UserProfile:
         if message.text != f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await user_set.user_set_last_name(message.from_user.id, message.text)
             await bot.send_message(message.from_user.id,
-                                   "<b>Successfully!</b>",
-                                   reply_markup=markup_users.user_profile_update_info())
-            await states.UserProfile.update_info.set()
+                                   "Update completed!",
+                                   reply_markup=markup_users.user_profile())
+            await states.UserProfile.my_profile.set()
+            user = await user_get.user_select(message.from_user.id)
+            sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            await bot.send_message(message.from_user.id,
+                                   f"{config.KEYBOARD.get('DASH') * 14}\n"
+                                   f"<em>Your Profile:</em>\n"
+                                   f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
+                                   f"Name: <b>{user.first_name} {user.last_name}</b>\n"
+                                   f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
+                                   f"Nickname: <b>@{user.username}</b>\n"
+                                   f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
+                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"{config.KEYBOARD.get('CITYSCAPE')} "
+                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"{config.KEYBOARD.get('TENT')} "
+                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
+                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"{config.KEYBOARD.get('SUN')} "
+                                   f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
+                                   f"{config.KEYBOARD.get('DASH') * 14}",
+                                   reply_markup=markup_users.user_profile())
         if message.text == f"{config.KEYBOARD.get('RIGHT_ARROW_CURVING_LEFT')} Back":
             await bot.send_message(message.from_user.id,
                                    "<b>You are back in Update Information</b>",
