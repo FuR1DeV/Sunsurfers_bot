@@ -14,6 +14,21 @@ async def user_add(user_id, username, first_name, last_name):
     await user.create()
 
 
+async def user_set_about_me(user_id, about):
+    user = await Users.query.where(Users.user_id == user_id).gino.first()
+    await user.update(about=about).apply()
+
+
+async def user_set_first_name(user_id, first_name):
+    user = await Users.query.where(Users.user_id == user_id).gino.first()
+    await user.update(first_name=first_name).apply()
+
+
+async def user_set_last_name(user_id, last_name):
+    user = await Users.query.where(Users.user_id == user_id).gino.first()
+    await user.update(last_name=last_name).apply()
+
+
 async def user_add_sungathering(user_id):
     """The user add to sungatherings table"""
     user = Sungatherings(user_id=user_id)
