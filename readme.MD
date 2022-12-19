@@ -1,7 +1,7 @@
-В файле docker-compose.yml
-POSTGRES_USER: "" - Имя пользователя
-POSTGRES_PASSWORD: "" - Пароль
-
+В файле docker-compose.yml  
+POSTGRES_USER: "" - Имя пользователя  
+POSTGRES_PASSWORD: "" - Пароль  
+  
 Создаём файл .env, куда вписываем хост (HOST), имя юзера бд(POSTGRESQL_USER), пароль от бд (POSTGRESQL_PASSWORD) и название бд (DATABASE) токен бота (BOT_TOKEN) а так же ADMIN_ID в таком виде id, сейчас вписан айди разработчика этого бота  
   
 HOST="db"  
