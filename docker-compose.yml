@@ -1,13 +1,18 @@
-version: "3"
+version: "3.7"
 
 services:
   db:
-    image: postgres:14-alpine
+    image: postgres:14
     container_name: sunsurfers_tg_bot
-    env_file:
-      - ./.env
+    restart: always
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "sunsurfers_tg_bot"
+      POSTGRES_USER: "ИМЯ ПОЛЬЗОВАТЕЛЯ"
+      POSTGRES_PASSWORD: "ПАРОЛЬ"
 
   bot:
     build: .
