@@ -3,19 +3,17 @@ version: "3"
 services:
   db:
     image: postgres:14-alpine
+    container_name: sunsurfers_tg_bot
     env_file:
-      - .env
+      - ./.env
     volumes:
-      - pgdata:var/lib/postgresql/data
-    restart: on-failure
-    ports:
-      - "5432:5432"
+      - pgdata:/var/lib/postgresql/data
+
   bot:
     build: .
-    command:
-      - sh -c "python main.py"
+    command: python main.py
     env_file:
-      - .env
+      - ./.env
     restart: always
     depends_on:
       - db
