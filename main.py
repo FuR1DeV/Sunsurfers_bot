@@ -1,14 +1,23 @@
 import logging
 from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
+from fastapi import FastAPI
 
 from bot import dp, bot
 from users.user import UserMain
 from logs.init_logger import init_logger
 from markups import markup_start
+from sun_api import api_users
 
 init_logger("bot")
 logger = logging.getLogger("bot.main")
+app = FastAPI()
+app.include_router(api_users.router)
+
+
+@app.get("/")
+def hello():
+    return {"SunSurfers": "Hello World"}
 
 
 @dp.message_handler(commands='start', state='*')

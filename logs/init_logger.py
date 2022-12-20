@@ -17,4 +17,4 @@ def init_logger(name):
     logger.addHandler(console)
     logger.addHandler(info_debug)
     logger.addHandler(err_warning)
-    logger.debug("Логгер инициализирован")
+    logger.debug("Logger initialization")
