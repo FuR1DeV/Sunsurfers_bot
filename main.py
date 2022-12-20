@@ -1,9 +1,14 @@
+import logging
 from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
 
 from bot import dp, bot
 from users.user import UserMain
+from logs.init_logger import init_logger
 from markups import markup_start
+
+init_logger("bot")
+logger = logging.getLogger("bot.main")
 
 
 @dp.message_handler(commands='start', state='*')

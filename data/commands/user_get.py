@@ -1,29 +1,32 @@
+import logging
 from data.models.users import Users
 from data.models.events import Sungatherings
 from settings.config import COUNTRIES
 
-
 """Functions for get information from the database"""
+logger = logging.getLogger("data.commands.user_get")
 
 
 async def user_select(user_id):
+    logger.debug(f"User select {user_id}")
     user = await Users.query.where(Users.user_id == user_id).gino.first()
     return user
 
 
 async def all_users():
+    logger.debug(f"User select all users")
     users = await Users.query.gino.all()
     return users
 
 
 async def user_get_event_sungathering(user_id):
-    """User checks info about sun gathering in country"""
+    logger.debug(f"User checks {user_id} info about sun gathering in country")
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     return user
 
 
 async def user_get_info_country(user_id, country):
-    """User checks info about sun gathering in country"""
+    logger.debug(f"User {user_id} checks info about sun gathering in {country}")
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     match country:
         case "Thailand":
@@ -51,7 +54,7 @@ async def user_get_info_country(user_id, country):
 
 
 async def check_user_sun_gathering(user_id, country):
-    """The function checks if there was a person at this gathering"""
+    logger.debug(f"Checks if there was a user {user_id} at this gathering {country}")
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     match country:
         case "Thailand":
@@ -79,7 +82,7 @@ async def check_user_sun_gathering(user_id, country):
 
 
 async def check_users_in_sun_gathering(country):
-    """The function checks all person at this gathering"""
+    logger.debug(f"The function checks all person at this gathering {country}")
     match country:
         case "Thailand":
             users = await Sungatherings.query.where(Sungatherings.thailand == 1).gino.all()
@@ -148,6 +151,7 @@ async def user_get_count_sungatherings(user_id):
 
 
 async def all_users_in_country(country):
+    logger.debug(f"Check all users in {country}")
     users = await Users.query.where(Users.country == country).gino.all()
     return users
 

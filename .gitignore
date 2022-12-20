@@ -3,3 +3,4 @@
 pycache/
 test.py
 logs/info_debug.log
+/logs/err_warning.log

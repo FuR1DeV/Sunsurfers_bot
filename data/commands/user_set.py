@@ -1,46 +1,51 @@
+import logging
 from data.models.users import Users
 from data.models.events import Sungatherings
 
-
 """Functions for adding/updating the database"""
+logger = logging.getLogger("data.commands.user_set")
 
 
 async def user_add(user_id, username, first_name, last_name):
-    """The user add to users table"""
+    logger.debug(f"The user {first_name}, {last_name} add to users table")
     user = Users(user_id=user_id, username=username, first_name=first_name,
                  last_name=last_name)
     await user.create()
 
 
 async def user_set_about_me(user_id, about):
+    logger.debug(f"User update {user_id} about")
     user = await Users.query.where(Users.user_id == user_id).gino.first()
     await user.update(about=about).apply()
 
 
 async def user_set_first_name(user_id, first_name):
+    logger.debug(f"User {user_id} update first_name - {first_name}")
     user = await Users.query.where(Users.user_id == user_id).gino.first()
     await user.update(first_name=first_name).apply()
 
 
 async def user_set_last_name(user_id, last_name):
+    logger.debug(f"User {user_id} update last_name - {last_name}")
     user = await Users.query.where(Users.user_id == user_id).gino.first()
     await user.update(last_name=last_name).apply()
 
 
 async def user_add_sungathering(user_id):
-    """The user add to sungatherings table"""
+    logger.debug(f"The user {user_id} add to sungatherings table")
     user = Sungatherings(user_id=user_id)
     await user.create()
 
 
 async def user_set_geo(user_id, country, state, province, city, town, address, latitude, longitude, updated_location):
-    """The user updates his geo data"""
+    logger.debug(f"The user {user_id} updates his geo data")
     user = await Users.query.where(Users.user_id == user_id).gino.first()
     await user.update(country=country, state=state, province=province, city=city, town=town, address=address,
                       latitude=latitude, longitude=longitude, updated_location=updated_location).apply()
 
 
 async def user_update_sungathering(user_id, country, switch: int):
+    logger.debug(f"The user {user_id} update sungathering")
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     match country:
         case "Thailand":
@@ -68,6 +73,7 @@ async def user_update_sungathering(user_id, country, switch: int):
 
 
 async def user_set_sun_gathering_about(user_id, country, message):
+    logger.debug(f"The user {user_id} set sungathering")
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     match country:
         case "Thailand":
