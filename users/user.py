@@ -114,6 +114,14 @@ class UserMain:
             user = await user_get.user_select(message.from_user.id)
             await states.UserProfile.my_profile.set()
             sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            if user.state is None:
+                user.state = f"{config.KEYBOARD.get('MINUS')}"
+            if user.province is None:
+                user.province = f"{config.KEYBOARD.get('MINUS')}"
+            if user.city is None:
+                user.city = f"{config.KEYBOARD.get('MINUS')}"
+            if user.town is None:
+                user.town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -122,11 +130,11 @@ class UserMain:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Nickname: <b>@{message.from_user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"Country: <b>{user.country}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
-                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"State: <b>{user.state}</b> | Province: <b>{user.province}\n</b>"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b>\n"
+                                   f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -225,6 +233,14 @@ class UserProfile:
             user = await user_get.user_select(message.from_user.id)
             await states.UserProfile.my_profile.set()
             sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            if user.state is None:
+                user.state = f"{config.KEYBOARD.get('MINUS')}"
+            if user.province is None:
+                user.province = f"{config.KEYBOARD.get('MINUS')}"
+            if user.city is None:
+                user.city = f"{config.KEYBOARD.get('MINUS')}"
+            if user.town is None:
+                user.town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -233,11 +249,11 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Nickname: <b>@{user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"Country: <b>{user.country}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
-                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"State: <b>{user.state}</b> | Province: <b>{user.province}\n</b>"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b>\n"
+                                   f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -315,6 +331,14 @@ class UserProfile:
             await states.UserProfile.my_profile.set()
             user = await user_get.user_select(callback.from_user.id)
             sungatherings = await user_get.user_get_count_sungatherings(callback.from_user.id)
+            if user.state is None:
+                user.state = f"{config.KEYBOARD.get('MINUS')}"
+            if user.province is None:
+                user.province = f"{config.KEYBOARD.get('MINUS')}"
+            if user.city is None:
+                user.city = f"{config.KEYBOARD.get('MINUS')}"
+            if user.town is None:
+                user.town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(callback.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -323,11 +347,11 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Nickname: <b>@{user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"Country: <b>{user.country}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
-                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"State: <b>{user.state}</b> | Province: <b>{user.province}\n</b>"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b>\n"
+                                   f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -345,6 +369,14 @@ class UserProfile:
             await states.UserProfile.my_profile.set()
             user = await user_get.user_select(message.from_user.id)
             sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            if user.state is None:
+                user.state = f"{config.KEYBOARD.get('MINUS')}"
+            if user.province is None:
+                user.province = f"{config.KEYBOARD.get('MINUS')}"
+            if user.city is None:
+                user.city = f"{config.KEYBOARD.get('MINUS')}"
+            if user.town is None:
+                user.town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -353,11 +385,11 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Nickname: <b>@{user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"Country: <b>{user.country}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
-                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"State: <b>{user.state}</b> | Province: <b>{user.province}\n</b>"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b>\n"
+                                   f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -380,6 +412,14 @@ class UserProfile:
             await states.UserProfile.my_profile.set()
             user = await user_get.user_select(message.from_user.id)
             sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            if user.state is None:
+                user.state = f"{config.KEYBOARD.get('MINUS')}"
+            if user.province is None:
+                user.province = f"{config.KEYBOARD.get('MINUS')}"
+            if user.city is None:
+                user.city = f"{config.KEYBOARD.get('MINUS')}"
+            if user.town is None:
+                user.town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -388,11 +428,11 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Nickname: <b>@{user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"Country: <b>{user.country}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
-                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"State: <b>{user.state}</b> | Province: <b>{user.province}\n</b>"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b>\n"
+                                   f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -415,6 +455,14 @@ class UserProfile:
             await states.UserProfile.my_profile.set()
             user = await user_get.user_select(message.from_user.id)
             sungatherings = await user_get.user_get_count_sungatherings(message.from_user.id)
+            if user.state is None:
+                user.state = f"{config.KEYBOARD.get('MINUS')}"
+            if user.province is None:
+                user.province = f"{config.KEYBOARD.get('MINUS')}"
+            if user.city is None:
+                user.city = f"{config.KEYBOARD.get('MINUS')}"
+            if user.town is None:
+                user.town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
                                    f"{config.KEYBOARD.get('DASH') * 14}\n"
                                    f"<em>Your Profile:</em>\n"
@@ -423,11 +471,11 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                    f"Nickname: <b>@{user.username}</b>\n"
                                    f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                                   f"Country: <b>{user.country}</b> | State: <b>{user.state}</b>\n"
+                                   f"Country: <b>{user.country}</b>\n"
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
-                                   f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
+                                   f"State: <b>{user.state}</b> | Province: <b>{user.province}\n</b>"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b>\n"
+                                   f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -485,6 +533,14 @@ class EnterCountry:
             res = await user_get.user_get_info_username(user)
             data["user"] = res
         sungatherings = await user_get.user_get_count_sungatherings(res.user_id)
+        if res.state is None:
+            res.state = f"{config.KEYBOARD.get('MINUS')}"
+        if res.province is None:
+            res.province = f"{config.KEYBOARD.get('MINUS')}"
+        if res.city is None:
+            res.city = f"{config.KEYBOARD.get('MINUS')}"
+        if res.town is None:
+            res.town = f"{config.KEYBOARD.get('MINUS')}"
         await bot.send_message(callback.from_user.id,
                                f"{config.KEYBOARD.get('DASH') * 14}\n"
                                f"{config.KEYBOARD.get('SMILING_FACE_WITH_SUNGLASSES')} "
@@ -492,11 +548,11 @@ class EnterCountry:
                                f"{config.KEYBOARD.get('BUST_IN_SILHOUETTE')} "
                                f"Nickname: <b>@{res.username}</b>\n"
                                f"{config.KEYBOARD.get('GLOBE_SHOWING')} "
-                               f"Country: <b>{res.country}</b> | State: <b>{res.state}</b>\n"
+                               f"Country: <b>{res.country}</b>\n"
                                f"{config.KEYBOARD.get('CITYSCAPE')} "
-                               f"Province: <b>{res.province}</b> | City: <b>{res.city}</b>\n"
+                               f"State: <b>{res.state}</b> | Province: <b>{res.province}\n</b>"
                                f"{config.KEYBOARD.get('TENT')} "
-                               f"Town: <b>{res.town}</b>\n"
+                               f"City: <b>{res.city}</b> | Town: <b>{res.town}</b>\n"
                                f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                f"Last Update: <b>{res.updated_location}</b>\n"
                                f"{config.KEYBOARD.get('SUN')} "
