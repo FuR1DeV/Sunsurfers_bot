@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, sql, Text
+from sqlalchemy import Column, Integer, BigInteger, sql, Text, ForeignKey
 
 from data.db_gino import BaseModel
 
@@ -6,7 +6,7 @@ from data.db_gino import BaseModel
 class Sungatherings(BaseModel):
     __tablename__ = "sungatherings"
     id = Column(Integer, primary_key=True, nullable=False)
-    user_id = Column(BigInteger, nullable=False, unique=True)
+    user_id = Column(BigInteger, ForeignKey("users.user_id"), nullable=False, unique=True)
     thailand = Column(Integer, server_default="0")
     thailand_info = Column(Text)
     india = Column(Integer, server_default="0")

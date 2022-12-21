@@ -2,6 +2,7 @@ import logging
 from data.models.users import Users
 from data.models.events import Sungatherings
 from settings.config import COUNTRIES
+from data.db_gino import db
 
 """Functions for get information from the database"""
 logger = logging.getLogger("data.commands.user_get")
@@ -15,6 +16,12 @@ async def user_select(user_id):
 
 async def all_users():
     logger.debug(f"User select all users")
+    users = await Users.query.gino.all()
+    return users
+
+
+async def all_users_with_gatherings():
+    logger.debug(f"User select all users with gatherings")
     users = await Users.query.gino.all()
     return users
 
@@ -88,34 +95,34 @@ async def check_users_in_sun_gathering(country):
             users = await Sungatherings.query.where(Sungatherings.thailand == 1).gino.all()
             return users
         case "India":
-            users = await Sungatherings.query.where(Sungatherings.india == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.india == 2).gino.all()
             return users
         case "Vietnam":
-            users = await Sungatherings.query.where(Sungatherings.vietnam == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.vietnam == 3).gino.all()
             return users
         case "Philippines":
-            users = await Sungatherings.query.where(Sungatherings.philippines == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.philippines == 4).gino.all()
             return users
         case "Georgia":
-            users = await Sungatherings.query.where(Sungatherings.georgia == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.georgia == 5).gino.all()
             return users
         case "Indonesia":
-            users = await Sungatherings.query.where(Sungatherings.indonesia == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.indonesia == 6).gino.all()
             return users
         case "Nepal":
-            users = await Sungatherings.query.where(Sungatherings.nepal == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.nepal == 7).gino.all()
             return users
         case "Morocco":
-            users = await Sungatherings.query.where(Sungatherings.morocco == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.morocco == 8).gino.all()
             return users
         case "Turkey":
-            users = await Sungatherings.query.where(Sungatherings.turkey == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.turkey == 9).gino.all()
             return users
         case "Mexico":
-            users = await Sungatherings.query.where(Sungatherings.mexico == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.mexico == 10).gino.all()
             return users
         case "SriLanka":
-            users = await Sungatherings.query.where(Sungatherings.srilanka == 1).gino.all()
+            users = await Sungatherings.query.where(Sungatherings.srilanka == 11).gino.all()
             return users
 
 
@@ -159,3 +166,34 @@ async def all_users_in_country(country):
 async def user_get_info_username(username):
     user = await Users.query.where(Users.username == username).gino.first()
     return user
+
+
+async def user_get_countries_in_number(user_id):
+    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    countries = []
+    try:
+        if user.thailand:
+            countries.append(1)
+        if user.india:
+            countries.append(2)
+        if user.vietnam:
+            countries.append(3)
+        if user.philippines:
+            countries.append(4)
+        if user.georgia:
+            countries.append(5)
+        if user.indonesia:
+            countries.append(6)
+        if user.nepal:
+            countries.append(7)
+        if user.morocco:
+            countries.append(8)
+        if user.turkey:
+            countries.append(9)
+        if user.mexico:
+            countries.append(10)
+        if user.srilanka:
+            countries.append(11)
+    except AttributeError:
+        pass
+    return countries

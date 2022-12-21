@@ -37,39 +37,67 @@ async def user_add_sungathering(user_id):
     await user.create()
 
 
-async def user_set_geo(user_id, country, state, province, city, town, address, latitude, longitude, updated_location):
+async def user_set_geo(user_id, country, state, province, city, town, latitude, longitude, updated_location):
     logger.debug(f"The user {user_id} updates his geo data")
     user = await Users.query.where(Users.user_id == user_id).gino.first()
-    await user.update(country=country, state=state, province=province, city=city, town=town, address=address,
+    await user.update(country=country, state=state, province=province, city=city, town=town,
                       latitude=latitude, longitude=longitude, updated_location=updated_location).apply()
 
 
-async def user_update_sungathering(user_id, country, switch: int):
+async def user_update_sungathering(user_id, country):
     logger.debug(f"The user {user_id} update sungathering")
     user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
     match country:
         case "Thailand":
-            await user.update(thailand=switch).apply()
+            await user.update(thailand=1).apply()
         case "India":
-            await user.update(india=switch).apply()
+            await user.update(india=2).apply()
         case "Vietnam":
-            await user.update(vietnam=switch).apply()
+            await user.update(vietnam=3).apply()
         case "Philippines":
-            await user.update(philippines=switch).apply()
+            await user.update(philippines=4).apply()
         case "Georgia":
-            await user.update(georgia=switch).apply()
+            await user.update(georgia=5).apply()
         case "Indonesia":
-            await user.update(indonesia=switch).apply()
+            await user.update(indonesia=6).apply()
         case "Nepal":
-            await user.update(nepal=switch).apply()
+            await user.update(nepal=7).apply()
         case "Morocco":
-            await user.update(morocco=switch).apply()
+            await user.update(morocco=8).apply()
         case "Turkey":
-            await user.update(turkey=switch).apply()
+            await user.update(turkey=9).apply()
         case "Mexico":
-            await user.update(mexico=switch).apply()
+            await user.update(mexico=10).apply()
         case "SriLanka":
-            await user.update(srilanka=switch).apply()
+            await user.update(srilanka=11).apply()
+
+
+async def user_delete_sungathering(user_id, country):
+    logger.debug(f"The user {user_id} update sungathering")
+    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    match country:
+        case "Thailand":
+            await user.update(thailand=0).apply()
+        case "India":
+            await user.update(india=0).apply()
+        case "Vietnam":
+            await user.update(vietnam=0).apply()
+        case "Philippines":
+            await user.update(philippines=0).apply()
+        case "Georgia":
+            await user.update(georgia=0).apply()
+        case "Indonesia":
+            await user.update(indonesia=0).apply()
+        case "Nepal":
+            await user.update(nepal=0).apply()
+        case "Morocco":
+            await user.update(morocco=0).apply()
+        case "Turkey":
+            await user.update(turkey=0).apply()
+        case "Mexico":
+            await user.update(mexico=0).apply()
+        case "SriLanka":
+            await user.update(srilanka=0).apply()
 
 
 async def user_set_sun_gathering_about(user_id, country, message):

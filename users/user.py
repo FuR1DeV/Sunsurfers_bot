@@ -50,30 +50,14 @@ class UserMain:
             province = location.raw.get("address").get("province")
             city = location.raw.get("address").get("city")
             town = location.raw.get("address").get("town")
-            road = location.raw.get("address").get("road")
-            house = location.raw.get("address").get("house_number")
-            if road is None:
-                road = f"{config.KEYBOARD.get('MINUS')}"
-            if house is None:
-                house = f"{config.KEYBOARD.get('MINUS')}"
-            address = f'{road} - {house}'
             latitude = location.raw.get("lat")
             longitude = location.raw.get("lon")
-            if state_ is None:
-                state_ = f"{config.KEYBOARD.get('MINUS')}"
-            if province is None:
-                province = f"{config.KEYBOARD.get('MINUS')}"
-            if city is None:
-                city = f"{config.KEYBOARD.get('MINUS')}"
-            if town is None:
-                town = f"{config.KEYBOARD.get('MINUS')}"
             await bot.send_message(message.from_user.id,
                                    f'Country: <b>{country}</b>\n'
                                    f'State: <b>{state_}</b>\n'
                                    f'Province: <b>{province}</b>\n'
                                    f'City: <b>{city}</b>\n'
-                                   f'Town: <b>{town}</b>\n'
-                                   f'Address: <b>{address}</b>\n')
+                                   f'Town: <b>{town}</b>\n')
             if country is None:
                 await bot.send_message(message.from_user.id,
                                        "Your location has not been determined"
@@ -92,7 +76,6 @@ class UserMain:
                     data["province"] = province
                     data["city"] = city
                     data["town"] = town
-                    data["address"] = address
                     data["latitude"] = latitude
                     data["longitude"] = longitude
                     data["time_location"] = datetime.now().strftime('%d %B %Y')
@@ -115,7 +98,6 @@ class UserMain:
                                         data.get("province"),
                                         data.get("city"),
                                         data.get("town"),
-                                        data.get("address"),
                                         data.get("latitude"),
                                         data.get("longitude"),
                                         data.get("time_location"))
@@ -144,7 +126,7 @@ class UserMain:
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -255,7 +237,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -281,30 +263,14 @@ class UserProfile:
                 province = location.raw.get("address").get("province")
                 city = location.raw.get("address").get("city")
                 town = location.raw.get("address").get("town")
-                road = location.raw.get("address").get("road")
-                house = location.raw.get("address").get("house_number")
-                if road is None:
-                    road = f"{config.KEYBOARD.get('MINUS')}"
-                if house is None:
-                    house = f"{config.KEYBOARD.get('MINUS')}"
-                address = f'{road} - {house}'
                 latitude = location.raw.get("lat")
                 longitude = location.raw.get("lon")
-                if state_ is None:
-                    state_ = f"{config.KEYBOARD.get('MINUS')}"
-                if province is None:
-                    province = f"{config.KEYBOARD.get('MINUS')}"
-                if city is None:
-                    city = f"{config.KEYBOARD.get('MINUS')}"
-                if town is None:
-                    town = f"{config.KEYBOARD.get('MINUS')}"
                 await bot.send_message(message.from_user.id,
                                        f'Country: <b>{country}</b>\n'
                                        f'State: <b>{state_}</b>\n'
                                        f'Province: <b>{province}</b>\n'
                                        f'City: <b>{city}</b>\n'
-                                       f'Town: <b>{town}</b>\n'
-                                       f'Address: <b>{address}</b>\n')
+                                       f'Town: <b>{town}</b>\n')
                 if country is None:
                     await bot.send_message(message.from_user.id,
                                            "Your location has not been determined"
@@ -322,7 +288,6 @@ class UserProfile:
                         data["province"] = province
                         data["city"] = city
                         data["town"] = town
-                        data["address"] = address
                         data["latitude"] = latitude
                         data["longitude"] = longitude
                         data["time_location"] = datetime.now().strftime('%d %B %Y')
@@ -341,7 +306,6 @@ class UserProfile:
                                         data.get("province"),
                                         data.get("city"),
                                         data.get("town"),
-                                        data.get("address"),
                                         data.get("latitude"),
                                         data.get("longitude"),
                                         data.get("time_location"))
@@ -363,7 +327,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -393,7 +357,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -428,7 +392,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -463,7 +427,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('CITYSCAPE')} "
                                    f"Province: <b>{user.province}</b> | City: <b>{user.city}</b>\n"
                                    f"{config.KEYBOARD.get('TENT')} "
-                                   f"Town: <b>{user.town}</b> | Address: <b>{user.address}</b>\n"
+                                   f"Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
                                    f"Last Update: <b>{user.updated_location}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
@@ -717,7 +681,7 @@ class Events:
     async def add_gathering(callback: types.CallbackQuery):
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         country = callback.data.split()[1]
-        await user_set.user_update_sungathering(callback.from_user.id, country, 1)
+        await user_set.user_update_sungathering(callback.from_user.id, country)
         user_countries = await user_get.user_get_event_sungathering(callback.from_user.id)
         countries_dict = {"Thailand": 0, "India": 0, "Vietnam": 0, "Philippines": 0, "Georgia": 0, "Indonesia": 0,
                           "Nepal": 0, "Morocco": 0, "Turkey": 0, "Mexico": 0, "SriLanka": 0}
@@ -826,8 +790,7 @@ class Events:
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         async with state.proxy() as data:
             await user_set.user_update_sungathering(callback.from_user.id,
-                                                    data.get("sun_gathering_country"),
-                                                    1)
+                                                    data.get("sun_gathering_country"))
         await bot.send_message(callback.from_user.id,
                                f"Great you were at this event! <b>SunGathering - "
                                f"{data.get('sun_gathering_country')}</b>\n",
@@ -859,7 +822,7 @@ class Events:
         await bot.delete_message(callback.from_user.id, callback.message.message_id)
         async with state.proxy() as data:
             country = data.get("sun_gathering_country")
-        await user_set.user_update_sungathering(callback.from_user.id, country, 0)
+        await user_set.user_delete_sungathering(callback.from_user.id, country)
         await bot.send_message(callback.from_user.id,
                                "You have been removed from this event",
                                reply_markup=markup_users.sun_gathering_menu_select_country(False))
