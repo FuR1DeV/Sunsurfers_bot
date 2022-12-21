@@ -6,12 +6,10 @@ from fastapi import FastAPI
 from bot import dp, bot
 from data.commands import user_set
 from users.user import UserMain
-from logs.init_logger import init_logger
 from markups import markup_start
 from sun_api import api_users
 
-init_logger("bot")
-logger = logging.getLogger("bot.main")
+
 app = FastAPI()
 app.include_router(api_users.router)
 
@@ -34,7 +32,7 @@ async def start(message: types.Message, state: FSMContext):
 
 
 async def on_startup(_):
-
+    logging.basicConfig(level=logging.DEBUG)
     from data.db_gino import db
     from data import db_gino
     print("Database connected")
