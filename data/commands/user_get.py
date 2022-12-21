@@ -1,6 +1,6 @@
 import logging
 from data.models.users import Users
-from data.models.events import Sungatherings
+from data.models.events import Sungatherings, Events
 from settings.config import COUNTRIES
 from data.db_gino import db
 
@@ -197,3 +197,8 @@ async def user_get_countries_in_number(user_id):
     except AttributeError:
         pass
     return countries
+
+
+async def sungatherings():
+    res = await Events.query.gino.all()
+    return res

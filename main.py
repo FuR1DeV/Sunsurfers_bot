@@ -4,6 +4,7 @@ from aiogram.dispatcher import FSMContext
 from fastapi import FastAPI
 
 from bot import dp, bot
+from data.commands import user_set
 from users.user import UserMain
 from logs.init_logger import init_logger
 from markups import markup_start
@@ -44,7 +45,7 @@ async def on_startup(_):
 
     """Создание БД"""
     await db.gino.create_all()
-
+    await user_set.add_events()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)

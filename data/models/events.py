@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, sql, Text, ForeignKey
+from sqlalchemy import Column, Integer, BigInteger, sql, Text, ForeignKey, String
 
 from data.db_gino import BaseModel
 
@@ -29,5 +29,15 @@ class Sungatherings(BaseModel):
     mexico_info = Column(Text)
     srilanka = Column(Integer, server_default="0")
     srilanka_info = Column(Text)
+
+    query: sql.select
+
+
+class Events(BaseModel):
+    __tablename__ = "events"
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String)
+    country = Column(String)
+    year = Column(Integer)
 
     query: sql.select

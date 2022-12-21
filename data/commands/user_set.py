@@ -1,6 +1,6 @@
 import logging
 from data.models.users import Users
-from data.models.events import Sungatherings
+from data.models.events import Sungatherings, Events
 
 """Functions for adding/updating the database"""
 logger = logging.getLogger("data.commands.user_set")
@@ -126,3 +126,38 @@ async def user_set_sun_gathering_about(user_id, country, message):
             await user.update(mexico_info=message).apply()
         case "SriLanka":
             await user.update(srilanka_info=message).apply()
+
+
+async def add_events():
+    exists = await Events.query.gino.all()
+    if exists:
+        pass
+    else:
+        thailand = Events(title="SunGathering 1.0 Thailand", country="th", year=2013)
+        india = Events(title="SunGathering 2.0 India", country="in", year=2014)
+        vietnam = Events(title="SunGathering 3.0 Vietnam", country="vn", year=2014)
+        philippines = Events(title="SunGathering 4.0 Philippines", country="ph", year=2015)
+        georgia = Events(title="SunGathering 5.0 Georgia", country="ph", year=2015)
+        indonesia = Events(title="SunGathering 6.0 Indonesia", country="ph", year=2016)
+        nepal = Events(title="SunGathering 7.0 Nepal", country="np", year=2016)
+        morocco = Events(title="SunGathering 8.0 Morocco", country="np", year=2017)
+        turkey = Events(title="SunGathering 9.0 Turkey", country="np", year=2017)
+        mexico = Events(title="SunGathering 10.0 Mexico", country="mx", year=2018)
+        srilanka = Events(title="SunGathering 11.0 Sri-Lanka", country="lk", year=2019)
+        await thailand.create()
+        await india.create()
+        await vietnam.create()
+        await philippines.create()
+        await georgia.create()
+        await indonesia.create()
+        await nepal.create()
+        await morocco.create()
+        await turkey.create()
+        await mexico.create()
+        await srilanka.create()
+
+
+
+
+
+

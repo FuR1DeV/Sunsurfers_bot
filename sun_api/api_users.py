@@ -1,31 +1,29 @@
 from fastapi import status, HTTPException, APIRouter
-from typing import List
 
 from settings import config
-from sun_api import schemas
 from data.commands import user_get
 from data.db_gino import db
 
-router = APIRouter(
-    prefix="/users",
-    tags=["Users"]
-)
+router = APIRouter()
 
 
-@router.get("/")
+@router.get("/users")
 async def get_users():
     await db.set_bind(config.POSTGRES_URI)
     users = await user_get.all_users()
     for i in users:
         countries = await user_get.user_get_countries_in_number(i.__values__.get("user_id"))
         i.__values__["sun"] = countries
+    res = []
+    for i in users:
+        res.append(i.__values__)
     bind = db.pop_bind()
     if bind:
         await bind.close()
-    return users
+    return res
 
 
-@router.get("/{user_id}")
+@router.get("/users/{user_id}")
 async def get_user_by_id(user_id: int):
     await db.set_bind(config.POSTGRES_URI)
     user = await user_get.user_select(user_id)
@@ -37,4 +35,17 @@ async def get_user_by_id(user_id: int):
     bind = db.pop_bind()
     if bind:
         await bind.close()
-    return user
+    return user.__values__
+
+
+@router.get("/events")
+async def get_gatherings():
+    await db.set_bind(config.POSTGRES_URI)
+    events = await user_get.sungatherings()
+    bind = db.pop_bind()
+    if bind:
+        await bind.close()
+    res = []
+    for i in events:
+        res.append(i.__values__)
+    return res
