@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import status, HTTPException, APIRouter
 
 from settings import config
@@ -14,6 +16,7 @@ async def get_users():
     for i in users:
         countries = await user_get.user_get_countries_in_number(i.__values__.get("user_id"))
         i.__values__["sun"] = countries
+        i.__values__["updated_location"] = datetime.strptime(i.__values__["updated_location"], '%d %B %Y')
     res = []
     for i in users:
         res.append(i.__values__)

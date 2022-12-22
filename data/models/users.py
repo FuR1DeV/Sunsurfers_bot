@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String, sql, Text
+from sqlalchemy import Column, Boolean, BigInteger, String, sql, Text
 
 from data.db_gino import BaseModel
 
@@ -18,7 +18,7 @@ class Users(BaseModel):
     latitude = Column(String)
     longitude = Column(String)
     updated_location = Column(String)
-    ban = Column(Integer, nullable=False, server_default="0")
+    ban = Column(Boolean, nullable=False, server_default="False")
 
     query: sql.select
     join: sql.join

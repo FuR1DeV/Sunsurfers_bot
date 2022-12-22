@@ -1,6 +1,6 @@
 import logging
 from data.models.users import Users
-from data.models.events import Sungatherings, Events
+from data.models.events import EventMembers, SunGatherings
 from settings.config import COUNTRIES
 from data.db_gino import db
 
@@ -28,13 +28,13 @@ async def all_users_with_gatherings():
 
 async def user_get_event_sungathering(user_id):
     logger.debug(f"User checks {user_id} info about sun gathering in country")
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     return user
 
 
 async def user_get_info_country(user_id, country):
     logger.debug(f"User {user_id} checks info about sun gathering in {country}")
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     match country:
         case "Thailand":
             return user.thailand
@@ -62,7 +62,7 @@ async def user_get_info_country(user_id, country):
 
 async def check_user_sun_gathering(user_id, country):
     logger.debug(f"Checks if there was a user {user_id} at this gathering {country}")
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     match country:
         case "Thailand":
             return user.thailand_info
@@ -92,42 +92,42 @@ async def check_users_in_sun_gathering(country):
     logger.debug(f"The function checks all person at this gathering {country}")
     match country:
         case "Thailand":
-            users = await Sungatherings.query.where(Sungatherings.thailand == 1).gino.all()
+            users = await EventMembers.query.where(EventMembers.thailand == 1).gino.all()
             return users
         case "India":
-            users = await Sungatherings.query.where(Sungatherings.india == 2).gino.all()
+            users = await EventMembers.query.where(EventMembers.india == 2).gino.all()
             return users
         case "Vietnam":
-            users = await Sungatherings.query.where(Sungatherings.vietnam == 3).gino.all()
+            users = await EventMembers.query.where(EventMembers.vietnam == 3).gino.all()
             return users
         case "Philippines":
-            users = await Sungatherings.query.where(Sungatherings.philippines == 4).gino.all()
+            users = await EventMembers.query.where(EventMembers.philippines == 4).gino.all()
             return users
         case "Georgia":
-            users = await Sungatherings.query.where(Sungatherings.georgia == 5).gino.all()
+            users = await EventMembers.query.where(EventMembers.georgia == 5).gino.all()
             return users
         case "Indonesia":
-            users = await Sungatherings.query.where(Sungatherings.indonesia == 6).gino.all()
+            users = await EventMembers.query.where(EventMembers.indonesia == 6).gino.all()
             return users
         case "Nepal":
-            users = await Sungatherings.query.where(Sungatherings.nepal == 7).gino.all()
+            users = await EventMembers.query.where(EventMembers.nepal == 7).gino.all()
             return users
         case "Morocco":
-            users = await Sungatherings.query.where(Sungatherings.morocco == 8).gino.all()
+            users = await EventMembers.query.where(EventMembers.morocco == 8).gino.all()
             return users
         case "Turkey":
-            users = await Sungatherings.query.where(Sungatherings.turkey == 9).gino.all()
+            users = await EventMembers.query.where(EventMembers.turkey == 9).gino.all()
             return users
         case "Mexico":
-            users = await Sungatherings.query.where(Sungatherings.mexico == 10).gino.all()
+            users = await EventMembers.query.where(EventMembers.mexico == 10).gino.all()
             return users
         case "SriLanka":
-            users = await Sungatherings.query.where(Sungatherings.srilanka == 11).gino.all()
+            users = await EventMembers.query.where(EventMembers.srilanka == 11).gino.all()
             return users
 
 
 async def user_get_count_sungatherings(user_id):
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     countries = []
     try:
         if user.thailand:
@@ -169,7 +169,7 @@ async def user_get_info_username(username):
 
 
 async def user_get_countries_in_number(user_id):
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     countries = []
     try:
         if user.thailand:
@@ -200,5 +200,5 @@ async def user_get_countries_in_number(user_id):
 
 
 async def sungatherings():
-    res = await Events.query.gino.all()
+    res = await SunGatherings.query.gino.all()
     return res

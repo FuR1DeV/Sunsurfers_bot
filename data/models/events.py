@@ -3,38 +3,88 @@ from sqlalchemy import Column, Integer, BigInteger, sql, Text, ForeignKey, Strin
 from data.db_gino import BaseModel
 
 
-class Sungatherings(BaseModel):
-    __tablename__ = "sungatherings"
+class EventMembers(BaseModel):
+    __tablename__ = "event_members"
     id = Column(Integer, primary_key=True, nullable=False)
     user_id = Column(BigInteger, ForeignKey("users.user_id"), nullable=False, unique=True)
-    thailand = Column(Integer, server_default="0")
+    thailand = Column(Integer)
     thailand_info = Column(Text)
-    india = Column(Integer, server_default="0")
+    india = Column(Integer)
     india_info = Column(Text)
-    vietnam = Column(Integer, server_default="0")
+    vietnam = Column(Integer)
     vietnam_info = Column(Text)
-    philippines = Column(Integer, server_default="0")
+    philippines = Column(Integer)
     philippines_info = Column(Text)
-    georgia = Column(Integer, server_default="0")
+    georgia = Column(Integer)
     georgia_info = Column(Text)
-    indonesia = Column(Integer, server_default="0")
+    indonesia = Column(Integer)
     indonesia_info = Column(Text)
-    nepal = Column(Integer, server_default="0")
+    nepal = Column(Integer)
     nepal_info = Column(Text)
-    morocco = Column(Integer, server_default="0")
+    morocco = Column(Integer)
     morocco_info = Column(Text)
-    turkey = Column(Integer, server_default="0")
+    turkey = Column(Integer)
     turkey_info = Column(Text)
-    mexico = Column(Integer, server_default="0")
+    mexico = Column(Integer)
     mexico_info = Column(Text)
-    srilanka = Column(Integer, server_default="0")
+    srilanka = Column(Integer)
     srilanka_info = Column(Text)
 
     query: sql.select
 
 
-class Events(BaseModel):
-    __tablename__ = "events"
+class SunGatherings(BaseModel):
+    __tablename__ = "sungatherings"
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String)
+    country = Column(String)
+    year = Column(Integer)
+
+    query: sql.select
+
+
+class SunUniversities(BaseModel):
+    __tablename__ = "sununiversities"
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String)
+    country = Column(String)
+    year = Column(Integer)
+
+    query: sql.select
+
+
+class SunAtoriums(BaseModel):
+    __tablename__ = "sunatoriums"
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String)
+    country = Column(String)
+    year = Column(Integer)
+
+    query: sql.select
+
+
+class YogaRetreats(BaseModel):
+    __tablename__ = "yogaretreats"
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String)
+    country = Column(String)
+    year = Column(Integer)
+
+    query: sql.select
+
+
+class SunWomanCamps(BaseModel):
+    __tablename__ = "sunwomancamps"
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String)
+    country = Column(String)
+    year = Column(Integer)
+
+    query: sql.select
+
+
+class Meetups(BaseModel):
+    __tablename__ = "meetups"
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String)
     country = Column(String)

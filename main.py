@@ -43,7 +43,7 @@ async def on_startup(_):
 
     """Создание БД"""
     await db.gino.create_all()
-    await user_set.add_events()
+    await user_set.add_sungatherings()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)

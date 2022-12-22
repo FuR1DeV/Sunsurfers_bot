@@ -1,6 +1,6 @@
 import logging
 from data.models.users import Users
-from data.models.events import Sungatherings, Events
+from data.models.events import EventMembers, SunGatherings
 
 """Functions for adding/updating the database"""
 logger = logging.getLogger("data.commands.user_set")
@@ -33,7 +33,7 @@ async def user_set_last_name(user_id, last_name):
 
 async def user_add_sungathering(user_id):
     logger.debug(f"The user {user_id} add to sungatherings table")
-    user = Sungatherings(user_id=user_id)
+    user = EventMembers(user_id=user_id)
     await user.create()
 
 
@@ -46,7 +46,7 @@ async def user_set_geo(user_id, country, state, province, city, town, latitude, 
 
 async def user_update_sungathering(user_id, country):
     logger.debug(f"The user {user_id} update sungathering")
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     match country:
         case "Thailand":
             await user.update(thailand=1).apply()
@@ -74,7 +74,7 @@ async def user_update_sungathering(user_id, country):
 
 async def user_delete_sungathering(user_id, country):
     logger.debug(f"The user {user_id} update sungathering")
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     match country:
         case "Thailand":
             await user.update(thailand=0).apply()
@@ -102,7 +102,7 @@ async def user_delete_sungathering(user_id, country):
 
 async def user_set_sun_gathering_about(user_id, country, message):
     logger.debug(f"The user {user_id} set sungathering")
-    user = await Sungatherings.query.where(Sungatherings.user_id == user_id).gino.first()
+    user = await EventMembers.query.where(EventMembers.user_id == user_id).gino.first()
     match country:
         case "Thailand":
             await user.update(thailand_info=message).apply()
@@ -128,22 +128,22 @@ async def user_set_sun_gathering_about(user_id, country, message):
             await user.update(srilanka_info=message).apply()
 
 
-async def add_events():
-    exists = await Events.query.gino.all()
+async def add_sungatherings():
+    exists = await SunGatherings.query.gino.all()
     if exists:
         pass
     else:
-        thailand = Events(title="SunGathering 1.0 Thailand", country="th", year=2013)
-        india = Events(title="SunGathering 2.0 India", country="in", year=2014)
-        vietnam = Events(title="SunGathering 3.0 Vietnam", country="vn", year=2014)
-        philippines = Events(title="SunGathering 4.0 Philippines", country="ph", year=2015)
-        georgia = Events(title="SunGathering 5.0 Georgia", country="ph", year=2015)
-        indonesia = Events(title="SunGathering 6.0 Indonesia", country="ph", year=2016)
-        nepal = Events(title="SunGathering 7.0 Nepal", country="np", year=2016)
-        morocco = Events(title="SunGathering 8.0 Morocco", country="np", year=2017)
-        turkey = Events(title="SunGathering 9.0 Turkey", country="np", year=2017)
-        mexico = Events(title="SunGathering 10.0 Mexico", country="mx", year=2018)
-        srilanka = Events(title="SunGathering 11.0 Sri-Lanka", country="lk", year=2019)
+        thailand = SunGatherings(title="SunGathering 1.0 Thailand", country="th", year=2013)
+        india = SunGatherings(title="SunGathering 2.0 India", country="in", year=2014)
+        vietnam = SunGatherings(title="SunGathering 3.0 Vietnam", country="vn", year=2014)
+        philippines = SunGatherings(title="SunGathering 4.0 Philippines", country="ph", year=2015)
+        georgia = SunGatherings(title="SunGathering 5.0 Georgia", country="ph", year=2015)
+        indonesia = SunGatherings(title="SunGathering 6.0 Indonesia", country="ph", year=2016)
+        nepal = SunGatherings(title="SunGathering 7.0 Nepal", country="np", year=2016)
+        morocco = SunGatherings(title="SunGathering 8.0 Morocco", country="np", year=2017)
+        turkey = SunGatherings(title="SunGathering 9.0 Turkey", country="np", year=2017)
+        mexico = SunGatherings(title="SunGathering 10.0 Mexico", country="mx", year=2018)
+        srilanka = SunGatherings(title="SunGathering 11.0 Sri-Lanka", country="lk", year=2019)
         await thailand.create()
         await india.create()
         await vietnam.create()
