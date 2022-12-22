@@ -1,6 +1,6 @@
 import logging
 from data.models.users import Users
-from data.models.events import EventMembers, SunGatherings
+from data.models.events import EventMembers, SunGatherings, SunUniversities
 
 """Functions for adding/updating the database"""
 logger = logging.getLogger("data.commands.user_set")
@@ -157,7 +157,21 @@ async def add_sungatherings():
         await srilanka.create()
 
 
-
+async def add_sununiversities():
+    exists = await SunUniversities.query.gino.all()
+    if exists:
+        pass
+    else:
+        india = SunUniversities(title="SunUniversity 1.0 India", country="in", year=2015)
+        srilanka = SunUniversities(title="SunUniversity 2.0 Sri-Lanka", country="lk", year=2016)
+        turkey = SunUniversities(title="SunUniversity 3.0 Turkey", country="np", year=2017)
+        thailand = SunUniversities(title="SunUniversity 4.0 Thailand", country="th", year=2018)
+        albania = SunUniversities(title="SunUniversity 5.0 Albania", country="al", year=2019)
+        await india.create()
+        await srilanka.create()
+        await turkey.create()
+        await thailand.create()
+        await albania.create()
 
 
 

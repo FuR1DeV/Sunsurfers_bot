@@ -1,6 +1,6 @@
 import logging
 from data.models.users import Users
-from data.models.events import EventMembers, SunGatherings
+from data.models.events import EventMembers, SunGatherings, SunUniversities
 from settings.config import COUNTRIES
 from data.db_gino import db
 
@@ -201,4 +201,9 @@ async def user_get_countries_in_number(user_id):
 
 async def sungatherings():
     res = await SunGatherings.query.gino.all()
+    return res
+
+
+async def sununiversities():
+    res = await SunUniversities.query.gino.all()
     return res

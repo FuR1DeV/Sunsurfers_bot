@@ -44,11 +44,17 @@ async def get_user_by_id(user_id: int):
 @router.get("/events")
 async def get_gatherings():
     await db.set_bind(config.POSTGRES_URI)
-    events = await user_get.sungatherings()
+    sungatherings = await user_get.sungatherings()
+    sununiversities = await user_get.sununiversities()
     bind = db.pop_bind()
     if bind:
         await bind.close()
-    res = []
-    for i in events:
-        res.append(i.__values__)
-    return res
+    result = [
+        {"sungatherings": []},
+        {"sununiversities": []}
+    ]
+    for i in sungatherings:
+        result[0]["sungatherings"].append(i.__values__)
+    for i in sununiversities:
+        result[1]["sununiversities"].append(i.__values__)
+    return result
