@@ -78,7 +78,6 @@ class UserMain:
                     data["town"] = town
                     data["latitude"] = latitude
                     data["longitude"] = longitude
-                    data["time_location"] = datetime.now().strftime('%d %B %Y')
         except AttributeError:
             await bot.send_message(message.from_user.id,
                                    "Something went wrong\n"
@@ -100,7 +99,7 @@ class UserMain:
                                         data.get("town"),
                                         data.get("latitude"),
                                         data.get("longitude"),
-                                        data.get("time_location"))
+                                        datetime.now())
         await bot.send_message(callback.from_user.id,
                                f"{callback.from_user.first_name} You are in the main menu",
                                reply_markup=markup_users.main_menu())
@@ -136,7 +135,7 @@ class UserMain:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"Last Update: <b>{user.updated_location.strftime('%d %B %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -255,7 +254,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"Last Update: <b>{user.updated_location.strftime('%d %B %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -306,7 +305,6 @@ class UserProfile:
                         data["town"] = town
                         data["latitude"] = latitude
                         data["longitude"] = longitude
-                        data["time_location"] = datetime.now().strftime('%d %B %Y')
             except AttributeError:
                 await bot.send_message(message.from_user.id,
                                        "Something went wrong\n"
@@ -324,7 +322,7 @@ class UserProfile:
                                         data.get("town"),
                                         data.get("latitude"),
                                         data.get("longitude"),
-                                        data.get("time_location"))
+                                        datetime.now())
             await bot.send_message(callback.from_user.id,
                                    "Update completed!",
                                    reply_markup=markup_users.user_profile())
@@ -353,7 +351,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"Last Update: <b>{user.updated_location.strftime('%d %B %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -391,7 +389,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"Last Update: <b>{user.updated_location.strftime('%d %B %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -434,7 +432,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"Last Update: <b>{user.updated_location.strftime('%d %B %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -477,7 +475,7 @@ class UserProfile:
                                    f"{config.KEYBOARD.get('TENT')} "
                                    f"City: <b>{user.city}</b> | Town: <b>{user.town}</b>\n"
                                    f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                                   f"Last Update: <b>{user.updated_location}</b>\n"
+                                   f"Last Update: <b>{user.updated_location.strftime('%d %B %Y')}</b>\n"
                                    f"{config.KEYBOARD.get('SUN')} "
                                    f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                    f"{config.KEYBOARD.get('DASH') * 14}",
@@ -554,7 +552,7 @@ class EnterCountry:
                                f"{config.KEYBOARD.get('TENT')} "
                                f"City: <b>{res.city}</b> | Town: <b>{res.town}</b>\n"
                                f"{config.KEYBOARD.get('HOURGLASS_NOT_DONE')} "
-                               f"Last Update: <b>{res.updated_location}</b>\n"
+                               f"Last Update: <b>{res.updated_location.strftime('%d %B %Y')}</b>\n"
                                f"{config.KEYBOARD.get('SUN')} "
                                f"SunGatherings: | <b>{len(sungatherings)}</b> | <b>{', '.join(sungatherings)}</b>\n"
                                f"{config.KEYBOARD.get('DASH') * 14}",

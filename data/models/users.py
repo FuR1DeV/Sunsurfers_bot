@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Boolean, BigInteger, String, sql, Text
+from sqlalchemy import Column, Boolean, BigInteger, String, sql, Text, DateTime
 
 from data.db_gino import BaseModel
 
@@ -17,7 +17,7 @@ class Users(BaseModel):
     town = Column(String)
     latitude = Column(String)
     longitude = Column(String)
-    updated_location = Column(String)
+    updated_location = Column(DateTime)
     ban = Column(Boolean, nullable=False, server_default="False")
 
     query: sql.select
