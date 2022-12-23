@@ -49,12 +49,12 @@ async def get_gatherings():
     bind = db.pop_bind()
     if bind:
         await bind.close()
-    result = [
-        {"sungatherings": []},
-        {"sununiversities": []}
-    ]
+    result = {
+        "sungatherings": [],
+        "sununiversities": []
+    }
     for i in sungatherings:
-        result[0]["sungatherings"].append(i.__values__)
+        result["sungatherings"].append(i.__values__)
     for i in sununiversities:
-        result[1]["sununiversities"].append(i.__values__)
+        result["sununiversities"].append(i.__values__)
     return result
